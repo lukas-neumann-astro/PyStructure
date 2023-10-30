@@ -85,4 +85,3 @@ def convolve(image, psf, noft = False, auto = False, correlate= False, no_pad = 
         else:
             return ndimage.convolve(image, np.rot90(psf, k = 2))
 
-    if no_pad:
