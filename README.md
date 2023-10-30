@@ -90,8 +90,7 @@
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+The PyStructure is a Python-based script. It builds on various Python modules
 
 ### Prerequisites
 
@@ -103,19 +102,11 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+Clone the repo
    ```sh
    git clone https://github.com/jdenbrok/PyStructure.git
    ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
+That's it. Now you have the necessary files to run the script
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -124,7 +115,23 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+
+* **Option a)**: Run it in the same way as Version 1 (see Version 1 for details).
+
+* **Option b)**: Use config file to set everything up
+
+### The config file
+
+If you work with the config file, you do not need to make any changes to the `create_database.py` file.
+
+* **Step 1**: Make sure your galaxy is listed in the `geometry.txt` file (No need to comment out galaxies that are not used).
+
+* **Step 2**: Follow the description of the steps in the `PyStructure.conf` file and define the variables accordingly.
+
+* **Step 3**: Run in the terminal with the following command:
+
+`python3 create_database.py --config PyStructure.conf`
+
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
