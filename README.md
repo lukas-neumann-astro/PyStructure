@@ -38,10 +38,10 @@
   <p align="center">
     Python-based script ideally suited to homogenize and work with a multitude of different 3D or 2D astronomical datasets.
     <br />
-    <a href="https://github.com/jdenbrok/PyStructure"><strong>Explore the docs »</strong></a>
+    <a href="https://pystructure.readthedocs.io/en/latest/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.comjdenbrok/PyStructure">View Demo</a>
+    <a href="https://pystructure.readthedocs.io/en/latest/quickstart.html">View Demo</a>
     ·
     <a href="https://github.com/jdenbrok/PyStructure/issues">Report Bug</a>
     ·
