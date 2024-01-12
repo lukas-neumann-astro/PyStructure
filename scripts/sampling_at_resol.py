@@ -42,7 +42,8 @@ def sample_at_res(in_data,
                   save_fits = False,
                   path_save_fits = "",
                   perbeam = False,
-                  spec_smooth = ["default","binned"]):
+                  spec_smooth = ["default","binned"],
+                  unc=False):
 
     """
     Function to sample the data and convolve
@@ -89,22 +90,23 @@ def sample_at_res(in_data,
         is_cube = True
     else:
         is_cube = False
-    
+
     if not is_cube:
         target_hdr = twod_head(target_hdr)
     #--------------------------------------------------------------
     #   Convolve and Align
     #------------------------------------------------------------
-   
+
     current_bmaj = hdr["BMAJ"]
-    
+
     #reduce by 1% to account for rounding
     if current_bmaj < (0.99*target_res_as/3600):
         data, hdr_out = conv_with_gauss(in_data= data, in_hdr = hdr,
                                               target_beam = target_res_as*np.array([1,1,0]),
                                               quiet = True,
-                                              perbeam = perbeam)
-        
+                                              perbeam = perbeam,
+                                              unc=unc)
+
         #data_speccube = SpectralCube(data=data, wcs = WCS(hdr))
         #data_speccube.beam = radio_beam.Beam(major=current_bmaj*u.arcsec, minor=current_bmaj*u.arcsec, pa=0*u.deg)
         #beam = radio_beam.Beam(major=target_res_as*u.arcsec, minor=target_res_as*u.arcsec, pa=0*u.deg)
@@ -132,13 +134,13 @@ def sample_at_res(in_data,
             target_hdr["CDELT3"] = 1000 * target_hdr["CDELT3"]
             target_hdr["CRVAL3"] = 1000 * target_hdr["CRVAL3"]
             target_hdr["CUNIT3"] = "m/s"
-            
+
         if abs(hdr["CDELT3"])<200:
             print("[INFO]\t Line Cube in km/s, converting to m/s.")
             hdr_out["CDELT3"] = 1000 * hdr["CDELT3"]
             hdr_out["CRVAL3"] = 1000 * hdr["CRVAL3"]
             hdr_out["CUNIT3"] = "m/s"
-        
+
         #check if cube vaxis is inverted (want delta v>0):
         if target_hdr["CDELT3"]<0:
             print("[INFO]\t Target Cube has invertied vaxis. Re-inverting...")
@@ -146,17 +148,17 @@ def sample_at_res(in_data,
             target_hdr["CDELT3"] = -1* target_hdr["CDELT3"]
             target_hdr["CRPIX3"] = 1
             target_hdr["CRVAL3"] = vaxis_inv[-1]
-            
+
         if hdr["CDELT3"]<0:
             print("[INFO]\t Line Cube has invertied vaxis. Re-inverting...")
             vaxis_inv = get_vaxis(hdr_out)
             hdr_out["CDELT3"] = -1* hdr["CDELT3"]
             hdr_out["CRPIX3"] = 1
             hdr_out["CRVAL3"] = vaxis_inv[-1]
-            
+
             #flip the cube
             data = np.flip(data, axis=0)
-            
+
     #perform spectral smooting, if needed
     if spec_smooth[0] in ["overlay"]:
         spec_smooth[0] = abs(target_hdr["CDELT3"])/1000
@@ -167,28 +169,28 @@ def sample_at_res(in_data,
             print("[INFO]\t No spectral smoothing; already at target resolution.")
         else:
             print("[INFO]\t Do spectral smoothing to {} km/s".format(spec_smooth[0]))
-            
-            
+
+
             #check the method:
             #
             # Gauss method:
             if spec_smooth[1] in ["gauss"]:
                 pix = ((spec_smooth[0]**2 - spec_res**2)**0.5  / spec_res)/fwhm_factor
                 kernel = Gaussian1DKernel(pix)
-            
-                
+
+
                 for spec_n in ProgressBar(range(dim_data[1]*dim_data[2])):
                     y = spec_n%dim_data[1]
                     x = spec_n//dim_data[1]
                     data[:,y,x] = convolve(data[:, y,x],kernel)
-          
-                
+
+
             # Binning method
             elif spec_smooth[1] in ["binned", "combined"]:
                 vaxis_native = get_vaxis(hdr_out)
-                
+
                 n_ratio = int(spec_smooth[0]/spec_res)
-                
+
                 #smooth, if remainder of target/res is almost 90%
                 if (spec_smooth[0]/spec_res-n_ratio)>0.9:
                     n_ratio+=1
@@ -198,50 +200,50 @@ def sample_at_res(in_data,
                 else:
                     new_vaxis = np.array([np.nanmean(vaxis_native[n_ratio*j:n_ratio*(j+1)]) for j in range(new_len)])
                     data = np.array([np.nanmean(data[n_ratio*j:n_ratio*(j+1),:,:], axis=0) for j in range(new_len)])
-                 
+
                     hdr_out["NAXIS3"] = new_len
                     hdr_out["CDELT3"] = new_vaxis[1]-new_vaxis[0]
                     hdr_out["CRVAL3"] = new_vaxis[0] + (hdr_out["CRPIX3"]-1)*hdr_out["CDELT3"]
-                
+
                 if spec_smooth[1] in ["combined"]:
                     print(n_ratio*spec_res)
                     if n_ratio*spec_res<spec_smooth[0]:
                         pix = ((spec_smooth[0]**2 - (n_ratio*spec_res)**2)**0.5  / spec_res)/fwhm_factor
                         kernel = Gaussian1DKernel(pix)
-            
-                    
+
+
                         for spec_n in ProgressBar(range(dim_data[1]*dim_data[2])):
                             y = spec_n%dim_data[1]
                             x = spec_n//dim_data[1]
                             data[:,y,x] = convolve(data[:, y,x],kernel)
-                   
-            
-            
+
+
+
     # Align, if needed
 
-    
+
     if not target_hdr is None:
         #check if we are spectrally smoothing. If so, prep the target_hdr to the right spectral number
         trg_hdr = copy.deepcopy(target_hdr)
         if not spec_smooth[0] in ["default"]:
-            
+
             #check if we need to spectrally change the target resolution
             if spec_smooth[0] > trg_hdr["CDELT3"]/1000:
                 vaxis_ov = get_vaxis(trg_hdr)
                 new_vaxis = np.arange(vaxis_ov[0], vaxis_ov[-1],spec_smooth[0]*1000)
-                
+
                 trg_hdr["NAXIS3"] = len(new_vaxis)
                 trg_hdr["CDELT3"] = spec_smooth[0]*1000
                 trg_hdr["CRVAL3"] = new_vaxis[0] + (trg_hdr["CRPIX3"]-1)*trg_hdr["CDELT3"]
-            
+
         wcs_target = WCS(trg_hdr)
         #need to delete the rest frequency for latest astropy version
         del hdr_out["RESTF*"]
         del trg_hdr["RESTF*"]
-        
+
         data_out, footprint = reproject_interp((data,hdr_out), trg_hdr, order="nearest-neighbor")
         data = data_out
-        
+
         # Save the convloved file as a fits file
         if save_fits:
             out_header = copy.copy(trg_hdr)
@@ -250,7 +252,7 @@ def sample_at_res(in_data,
             out_header["LINE"]=line_name
             fits.writeto(path_save_fits+galaxy+'_'+str(line_name)+'_{}as.fits'.format(target_res_as), data=data_out, header=out_header, overwrite=True)
             print("[INFO]\t Convolved Fits file has been saved.")
-        
+
     else:
         print("[INFO]\t No alignment because no target header supplied.")
 
@@ -264,9 +266,9 @@ def sample_at_res(in_data,
         pixel_coords = wcs_target.all_world2pix(np.column_stack((ra_samp, dec_samp)),0)
     samp_x = np.array(np.rint(pixel_coords[:,0]),dtype=int)
     samp_y = np.array(np.rint(pixel_coords[:,1]),dtype= int)
-    
-    
-    
+
+
+
     n_pts = len(samp_x)
     dim_data = np.shape(data)
 
@@ -278,7 +280,7 @@ def sample_at_res(in_data,
 
     coverage = np.zeros(n_pts)
     if is_cube:
-        
+
         in_map = np.where((samp_x>0)& (samp_x <dim_data[2]) &
                           (samp_y > 0)& (samp_y < dim_data[1]))[0]
         in_map_ct = len(in_map)
@@ -286,12 +288,12 @@ def sample_at_res(in_data,
         in_map = np.where((samp_x>0)& (samp_x <dim_data[1]) &
                           (samp_y > 0)& (samp_y < dim_data[0]))[0]
         in_map_ct = len(in_map)
-        
-    
+
+
     if in_map_ct>0:
         if is_cube:
             for kk in range(in_map_ct):
-                
+
                 result[in_map[kk],:] = data[:, samp_y[in_map[kk]],samp_x[in_map[kk]]]
                 coverage[in_map[kk]] =  np.nansum(np.isfinite(data[:, samp_y[in_map[kk]],samp_x[in_map[kk]]]))>=1
             coverage = np.array(coverage, dtype = int)

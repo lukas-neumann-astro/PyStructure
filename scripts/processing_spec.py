@@ -192,7 +192,7 @@ def process_spectra(sources_data,
         # Apply the CO-based mask to the EMPIRE lines and shuffle them
         #-------------------------------------------------------------------
         n_chan_new = 200
-
+       
         for jj in range(n_lines):
             line_name = lines_data["line_name"][jj].upper()
 
