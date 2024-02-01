@@ -498,7 +498,8 @@ def create_database(just_source=None, quiet=False, conf=False):
                                     dec_samp = samp_dec,
                                     target_res_as = target_res_as,
                                     target_hdr = ov_hdr,
-                                    perbeam = perbeam)
+                                    perbeam = perbeam,
+                                    unc=True)
             this_tag_name = 'INT_UC_'+bands["band_name"][jj].upper()
             if this_tag_name in this_data:
                 this_data[this_tag_name] = this_uc
