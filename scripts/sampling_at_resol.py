@@ -182,7 +182,8 @@ def sample_at_res(in_data,
                 for spec_n in ProgressBar(range(dim_data[1]*dim_data[2])):
                     y = spec_n%dim_data[1]
                     x = spec_n//dim_data[1]
-                    data[:,y,x] = convolve(data[:, y,x],kernel)
+                    data[:,y,x] = convolve(data[:, y,x],kernel,nan_treatment='fill')
+
 
 
             # Binning method
@@ -215,7 +216,8 @@ def sample_at_res(in_data,
                         for spec_n in ProgressBar(range(dim_data[1]*dim_data[2])):
                             y = spec_n%dim_data[1]
                             x = spec_n//dim_data[1]
-                            data[:,y,x] = convolve(data[:, y,x],kernel)
+                            data[:,y,x] = convolve(data[:, y,x],kernel,nan_treatment='fill')
+
 
 
 

@@ -8,6 +8,7 @@ from gauss_PSF import *
 import matplotlib.pyplot as plt
 from astropy.convolution import convolve, convolve_fft
 from astropy.utils.console import ProgressBar
+from scipy import ndimage
 
 def round_sig(x, sig=2):
     return round(x, sig-int(np.floor(np.log10(abs(x))))-1)
@@ -17,13 +18,14 @@ def convolve_func(data, kernel, method = "direct"):
     Perform either the direct or the fast fourier transform convolution
     """
     if method == "direct":
-        conv_data = convolve(data,kernel,allow_huge=True)
+        conv_data = convolve(data,kernel,allow_huge=True, nan_treatment='fill',)
     else:
-        conv_data = convolve_fft(data,kernel,allow_huge=True)
-        
+
+        conv_data = convolve_fft(data,kernel,allow_huge=True, nan_treatment='fill',)
+
     return conv_data
-    
-    
+
+
 def conv_with_gauss(in_data,
                     in_hdr = None,
                     start_beam = None,
@@ -250,7 +252,7 @@ def conv_with_gauss(in_data,
 
     minsize = 6.*np.rint(kernel_bmaj/as_per_pix) + 1.
     kern_size = int(minsize)
-   
+
     # You get problems if the PSF is bigger than the image if you are
     # using the IDLAstro convolve. Set to the minimum dimension
     dim_data = np.shape(data)
@@ -260,7 +262,7 @@ def conv_with_gauss(in_data,
     else:
         dim_x = dim_data[0]
         dim_y = dim_data[1]
-    
+
     if kern_size > dim_x or kern_size > dim_y:
         print("[Warning]\t PSF is very big compared to image.")
         kern_size = int(np.floor(min(dim_x,dim_y)/2-2)*2 + 1)
@@ -337,7 +339,7 @@ def conv_with_gauss(in_data,
             #       weight cube.
             if len(dim_wt) == 2:
                 weight = convolve_func(weight,kernel,method)
-                    
+
                 data = weighted_data
                 for n_spec in range(dim_data[0]):
                     data[n_spec,:,:] = weighted_data[n_spec,:,:] / weight
@@ -400,7 +402,7 @@ def conv_with_gauss(in_data,
         #;    Scale the data
         data *= scale_fac
 
-    
+
 
     #; If we are requested to treat the units as "per beam" then adjust the
     #; final map by the ratio of beam areas (final beam/original beam).
