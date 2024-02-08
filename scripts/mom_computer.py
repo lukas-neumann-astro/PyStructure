@@ -19,7 +19,7 @@ def get_mom_maps(spec_cube, mask, vaxis, mom_calc =[3, 3,"fwhm"]):
     delta_v = abs(vaxis[0]-vaxis[1])
 
     SNthresh = mom_calc[0]
-    conseq_channels = int(np.nanmax(float(mom_calc[1]),3))
+    conseq_channels = int(np.nanmax((float(mom_calc[1]),3)))
     mom2_method = mom_calc[2]
     #check if we do fwhm or not for mom2
     fac_mom2 = 1
