@@ -66,7 +66,7 @@ def process_spectra(sources_data,
                     ref_line_method,
                     SN_processing,
                     strict_mask,
-                    mom_calc = [3, "fwhm"],
+                    mom_calc = [3, 3, "fwhm"],
                     just_source = None
                     ):
     """

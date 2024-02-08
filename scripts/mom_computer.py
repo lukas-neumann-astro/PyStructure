@@ -6,7 +6,7 @@ from astropy.stats import median_absolute_deviation, mad_std
 
 
 
-def get_mom_maps(spec_cube, mask, vaxis, mom_calc =[3, "fwhm"]):
+def get_mom_maps(spec_cube, mask, vaxis, mom_calc =[3, 3,"fwhm"]):
     """
     Function to compute moment maps
     """
@@ -19,7 +19,8 @@ def get_mom_maps(spec_cube, mask, vaxis, mom_calc =[3, "fwhm"]):
     delta_v = abs(vaxis[0]-vaxis[1])
 
     SNthresh = mom_calc[0]
-    mom2_method = mom_calc[1]
+    conseq_channels = int(np.nanmax(float(mom_calc[1]),3))
+    mom2_method = mom_calc[2]
     #check if we do fwhm or not for mom2
     fac_mom2 = 1
     if mom2_method in ["fwhm"]:
@@ -61,7 +62,7 @@ def get_mom_maps(spec_cube, mask, vaxis, mom_calc =[3, "fwhm"]):
             masked = np.array(spec_cube[m,:]*mask[m,:]>SNthresh*mom_maps["rms"][m], dtype = int)
             masked = np.array((masked + np.roll(masked, 1) + np.roll(masked, -1))>=3, dtype = int)
 
-            if np.nansum(masked)>=1:
+            if np.nansum(masked)>=conseq_channels-2:
                 for kk in range(5):
                     masked = np.array(((masked + np.roll(masked, 1) + np.roll(masked, -1)) >= 1), dtype = int)
 

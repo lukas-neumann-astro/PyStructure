@@ -129,6 +129,7 @@ SN_processing = [2,4]
 strict_mask= False
 #define SN threshold for Mom1, Mom2 and EW calculation (for individual lines)
 mom_thresh = 3
+conseq_channels = 3 #needs to integer more than 3
 #differentiate between "fwhm", "sqrt", or "math"
 # math: use mathematical definition
 # sqrt: take square-root of mom2
@@ -653,7 +654,7 @@ def create_database(just_source=None, quiet=False, conf=False):
                     ref_line,
                     SN_processing,
                     strict_mask,
-                    [mom_thresh,mom2_method],
+                    [mom_thresh,conseq_channels,mom2_method],
                     )
 
     #Open the PyStructure and Save as FITS File
