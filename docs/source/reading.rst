@@ -82,3 +82,30 @@ Using the PyStructure class environment, some useful commands are:
 
 PyStructure Functions
 ---------------------
+
+REGISTER_VARIABLE("example_variable_documentation(param1, param2, ...)",
+                  functionNameHere, R"DOC(
+Example variable documentation showing the use of markup.
+All the reStructuredText commands as in python function docstrings are valid
+here and since it is a raw string we can wrap the string however we see fit:
+
+* we can also add bullet lists
+  with multi line entries and *inline* **markup**
+* we can add links to other variables and formulas: :math:`x^2`
+* and provide documentation for the parameters
+
+Warning:
+  Also warnings or info messages
+
+See Also:
+  :b2:var:`example_variable_documentation` (linking to ourselves :D)
+
+Parameters:
+  param1 (int): parameter description
+  param2 (str): and even more parameter descriptions
+    across various lines
+    and even in **bold**
+
+    Empty lines start a new paragraph in here
+
+)DOC");
