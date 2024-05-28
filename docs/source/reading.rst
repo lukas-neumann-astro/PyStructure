@@ -15,8 +15,8 @@ or in Jupyter Notebook), you can simply run:
   import numpy as np
   database = np.load("<path to npy file>"", allow_pickle = True).item()
 
-The instance ``databse`` is now a ``Python`` dictionary, and the relevant, processed data can be extracted using this infrastructure.
-For example ``databse['rgal_kpc']`` returns an array containing the galacocentric distances of each point (in kpc).
+The instance ``database`` is now a ``Python`` dictionary, and the relevant, processed data can be extracted using this infrastructure.
+For example ``database['rgal_kpc']`` returns an array containing the galacocentric distances of each point (in kpc).
 
 The PyStructure class
 ---------------------
