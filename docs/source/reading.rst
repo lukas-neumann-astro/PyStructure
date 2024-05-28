@@ -39,13 +39,46 @@ Quick Examples
 
 Using the PyStructure class environment, some useful commands are:
 
-* **List of Lines included in PyStructure**
+* **List of lines (3D cubes) included in PyStructure**
 .. code-block::
 
-  database.lines
+  print(database.lines)
   >>> ['12CO21', '12CO10']
 
 * **Extract and plot spectrum (e.g. of brightest sightline)**
+.. code-block::
+
+  import matplotlib.pyplot as plt
+
+  vaxis = database.get_vaxis()
+
+  #extract the CO(1-0) integrated intensities
+  ii_co10=database.struct['INT_VAL_12CO10']
+
+  #find index of largest intensity (i.e. the brightest sightline)
+  idx_brightes = np.argmax(ii_co10)
+
+  spec_co10 = database.struct['SPEC_VAL_12CO10'][idx_brightes,:]
+
+  #plot spectrum
+  plt.figure()
+  plt.step(vaxis, spec_co10)
+  plt.show()
+
+.. image:: spec.png
+     :width: 600
+
+* **Make 2D map of integrated intensities (quicklook)**
+
+.. code-block::
+
+  database.quickplot_2Dmap('12CO10')
+
+* **Make 2D map of integrated intensities (more extended)**
+
+  .. code-block::
+
+    database.quickplot_2Dmap('12CO10')
 
 PyStructure Functions
 ---------------------
