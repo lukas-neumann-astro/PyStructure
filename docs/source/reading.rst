@@ -33,3 +33,16 @@ To read in a database, you can use the following synthax:
   database = ps.PyStructure("path_to_file.npy")
 
 This way you have extracted the databse as a dictionary, and can access it (for example the galactocentric radii) using ``database.struct['rgal_kpc']``.
+
+Quick Examples
+--------------
+
+Using the PyStructure class environment, some useful commands are:
+
+* List of Lines included in PyStructure:
+.. code-block::
+  database.lines
+  >>> ['12CO21', '12CO10']
+
+PyStructure Functions
+---------------------
