@@ -30,6 +30,32 @@ You can run the functions using ``database.<function>()``.
     A function extracting the spectral velocities
 
     :param get_shuff: If ``True``, return the shuffled spectral axis.
-    :type center: Boolean
+    :type get_shuff: bool
+    :return: ``vaxis`` ; 1D arrays with the spectral axis values.
+    :rtype: np.array
+
+.. function:: database.get_ratio(line,sn = 5)
+
+    A function computing the line ratio between two lines
+
+    :param line: A list of two string of line1 and line2, with the ratio being line1/line2 (e.g. ``["12CO21","12CO10"]``)
+    :type line: list
+    :param sn: signal-to-noise ratio used for sigma clipping (can be ``float`` as well).
+    :type sn: int
+    :return: ``ratio`` ; Dictionary with the ratio (extract using ``ratio['ratio']``).
+    :rtype: dicitionary
+
+.. function:: database.export_fits(data_array,fname,adjust_header=None, verbose=False)
+
+    A function extracting the spectral velocities
+
+    :param data_array: If ``True``, return the shuffled spectral axis.
+    :type data_array: str
+    :param fname: If ``True``, return the shuffled spectral axis.
+    :type fname: str
+    :param adjust_header: If ``True``, return the shuffled spectral axis.
+    :type adjust_header: str
+    :param verbose: If ``True``, return the shuffled spectral axis.
+    :type verbose: bool
     :return: ``vaxis`` ; 1D arrays with the spectral axis values.
     :rtype: np.array
