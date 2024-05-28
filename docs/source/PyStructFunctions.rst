@@ -3,13 +3,11 @@ PyStructure Functions
 The PyStructure class contains a set of functions that help handle and extract the data stored in the dictionary.
 You can run the functions using ``database.<function>()``.
 
-.. function:: mymodule.my_function(param1, param2)
+.. function:: database.get_coordinates(center = None)
 
-   A simple example function.
+   A function extracting the rightasencion and declination coordinates. If center coordinate is provided, the ra and dec coordimnates are returned as offset in arcsec.
 
-   :param param1: The first parameter.
-   :type param1: str
-   :param param2: The second parameter.
-   :type param2: int
-   :return: A string combining the parameters.
-   :rtype: str
+   :param center: optional referece coordinate (e.g., "13:29:52.7 47:11:43"). If provided, the returned values will represent the offset in arccsec with respect to this coordinate.
+   :type center: str
+   :return: ``ra``, ``dec`` ; two 1D arrays, one for the rightasencion and on for the declination.
+   :rtype: np.array
