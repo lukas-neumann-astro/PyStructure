@@ -6,7 +6,7 @@ Working with PyStructures
 How to open the file
 --------------------
 
-To use Lumache, first install it using pip:
+When you run the ``create_database.py` script (see :ref:`run_example`)
 
 .. code-block:: console
 

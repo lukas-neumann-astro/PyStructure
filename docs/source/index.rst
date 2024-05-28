@@ -21,17 +21,17 @@ List of Papers
 --------------
 The scripts have been employed by several peer-reviewed publications:
 
-* den Brok et al. (2023), MNRAS, in press
+* den Brok et al. (2023), MNRAS, 526, 6347 
 
-* Eibensteiner et al. (2023), A&A, 675, 37 
+* Eibensteiner et al. (2023), A&A, 675, 37
 
 * Neumann et al. (2023),MNRAS, 521, 3348
 
 * den Brok et al. (2022), A&A, 662, 89
 
-* Eibensteiner et al. (2022), A&A, 659, 173  
- 
-* den Brok et al. (2021), MNRAS, 504, 3221 
+* Eibensteiner et al. (2022), A&A, 659, 173
+
+* den Brok et al. (2021), MNRAS, 504, 3221
 
 .. _Sphinx: http://www.sphinx-doc.org
 .. _Read the Docs: http://www.readthedocs.org
@@ -51,12 +51,11 @@ The scripts have been employed by several peer-reviewed publications:
     :hidden:
 
     simpleExample
-    advanced 
-   
+    advanced
+
 .. toctree::
     :maxdepth: 2
     :caption: Analysis
     :hidden:
 
     reading
-   
