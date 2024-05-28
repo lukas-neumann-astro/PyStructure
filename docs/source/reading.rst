@@ -6,11 +6,16 @@ Working with PyStructures
 How to open the file
 --------------------
 
-When you run the ``create_database.py` script (see :ref:`run_example`)
+When you run the ``create_database.py`` script (see :ref:`run_example`), it creates a
+``.npy`` file, which simply contains a dictionary. To open this dicionary (for example in another ``Python~~ scripts
+or in Jupyter Notebook), you can simply run:
 
-.. code-block:: console
+.. code-block::
 
-   (.venv) $ pip install lumache
+  import numpy as np
+  database = np.load("<path to npy file>"", allow_pickle = True).item()
+
+The instance ``databse`` is now a ``Python`` dictionary, and the relevant, processed data can be extracted using this infrastructure
 
 The PyStructure class
 ---------------------
