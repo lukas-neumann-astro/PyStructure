@@ -30,6 +30,6 @@ You can run the functions using ``database.<function>()``.
     A function extracting the spectral velocities
 
     :param get_shuff: If ``True``, return the shuffled spectral axis.
-    :type center: bool
+    :type center: Boolean
     :return: ``vaxis`` ; 1D arrays with the spectral axis values.
     :rtype: np.array
