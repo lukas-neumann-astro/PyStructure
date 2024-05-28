@@ -100,5 +100,5 @@ We can also produce the maps ourselves, such that we have some more advanced opt
   ax.set_ylabel(r'$\Delta$Decl. [arcsec]')
   plt.show()
 
-.. image:: quicklook2.png
+.. image:: map_2D.png
          :width: 400
