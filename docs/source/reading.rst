@@ -77,8 +77,28 @@ Using the PyStructure class environment, some useful commands are:
 .. image:: quicklook2.png
        :width: 400
 
+This function makes it possible to have a quick look at the integrated intensity one of the cubes that are loaded in the PyStructure.
+
 * **Make 2D map of integrated intensities (more extended)**
 
+We can also produce the maps ourselves, such that we have some more advanced options
 .. code-block::
 
-  database.quickplot_2Dmap('12CO10')
+  # Extract coordinates. We do not have to provide the center coordinate, this just
+  # returns the coordinates relative to the reference coordinate.
+  ra, dec = database.get_coordinates("13:29:52.7 47:11:43")
+
+  ii_co10=database.struct['INT_VAL_12CO10']
+  ii_co21=database.struct['INT_VAL_12CO21']
+
+  plt.figure(figsize=(5,5))
+  ax=plt.subplot(1,1,1)
+  plt.scatter(ra, dec,c=ii_co10, s=90, marker='h', cmap='inferno')
+  plt.tricontour(ra, dec,ii_co21, colors='w', alpha=.5)
+  ax.invert_xaxis()
+  ax.set_xlabel(r'$\Delta$R.A. [arcsec]')
+  ax.set_ylabel(r'$\Delta$Decl. [arcsec]')
+  plt.show()
+
+.. image:: quicklook2.png
+         :width: 400
