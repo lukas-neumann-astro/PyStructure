@@ -74,7 +74,7 @@ Using the PyStructure class environment, some useful commands are:
 
   database.quickplot_2Dmap('12CO10')
 
-.. image:: quicklook.png
+.. image:: quicklook2.png
        :width: 400
 
 * **Make 2D map of integrated intensities (more extended)**
