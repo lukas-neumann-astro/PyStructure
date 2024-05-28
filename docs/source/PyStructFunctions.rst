@@ -32,7 +32,7 @@ You can run the functions using ``database.<function>()``.
     :param get_shuff: If ``True``, return the shuffled spectral axis.
     :type get_shuff: bool
     :return: ``vaxis`` ; 1D arrays with the spectral axis values.
-    :rtype: np.array
+    :rtype: array
 
 .. function:: database.get_ratio(line,sn = 5)
 
@@ -43,19 +43,18 @@ You can run the functions using ``database.<function>()``.
     :param sn: signal-to-noise ratio used for sigma clipping (can be ``float`` as well).
     :type sn: int
     :return: ``ratio`` ; Dictionary with the ratio (extract using ``ratio['ratio']``).
-    :rtype: dicitionary
+    :rtype: dict
 
 .. function:: database.export_fits(data_array,fname,adjust_header=None, verbose=False)
 
-    A function extracting the spectral velocities
+    A function that exports a 2D PyStructure map back to a FITS file
 
-    :param data_array: If ``True``, return the shuffled spectral axis.
-    :type data_array: str
-    :param fname: If ``True``, return the shuffled spectral axis.
+    :param data_array: The data array that will be exported back to a FITS file.
+    :type data_array: array
+    :param fname: Name of the FITS file to be saved.
     :type fname: str
-    :param adjust_header: If ``True``, return the shuffled spectral axis.
-    :type adjust_header: str
-    :param verbose: If ``True``, return the shuffled spectral axis.
+    :param adjust_header: Dictionary with header keys and the corresponding value.
+    :type adjust_header: dict
+    :param verbose: If ``True``, print progress outpur.
     :type verbose: bool
-    :return: ``vaxis`` ; 1D arrays with the spectral axis values.
-    :rtype: np.array
+    :return: Saves the FITS file on the disk
