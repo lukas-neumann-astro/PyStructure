@@ -7,7 +7,7 @@ How to open the file
 --------------------
 
 When you run the ``create_database.py`` script (see :ref:`run_example`), it creates a
-``.npy`` file, which simply contains a dictionary. To open this dicionary (for example in another ``Python~~ scripts
+``.npy`` file, which simply contains a dictionary. To open this dicionary (for example in another ``Python`` scripts
 or in Jupyter Notebook), you can simply run:
 
 .. code-block::
