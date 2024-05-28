@@ -21,7 +21,7 @@ List of Papers
 --------------
 The scripts have been employed by several peer-reviewed publications:
 
-* den Brok et al. (2023), MNRAS, 526, 6347 
+* den Brok et al. (2023), MNRAS, 526, 6347
 
 * Eibensteiner et al. (2023), A&A, 675, 37
 
@@ -59,3 +59,4 @@ The scripts have been employed by several peer-reviewed publications:
     :hidden:
 
     reading
+    PyStructFunctions
