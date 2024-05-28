@@ -39,11 +39,13 @@ Quick Examples
 
 Using the PyStructure class environment, some useful commands are:
 
-* List of Lines included in PyStructure:
+* **List of Lines included in PyStructure**
 .. code-block::
 
   database.lines
   >>> ['12CO21', '12CO10']
+
+* **Extract and plot spectrum (e.g. of brightest sightline)**
 
 PyStructure Functions
 ---------------------
