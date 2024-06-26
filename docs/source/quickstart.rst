@@ -17,7 +17,7 @@ The first lines of the ``PyStructure.conf`` configure file contain information a
    # <path to directory with the data files>
    data_dir = "<path to data directory>"
 
-   
+
 
 
 .. _run_example:
@@ -25,11 +25,11 @@ The first lines of the ``PyStructure.conf`` configure file contain information a
 Running the Example
 -------------------
 
-Once you have correctly adjusted the ``data_dir`` path directory, you can simply run the script using the following command line: 
+Once you have correctly adjusted the ``data_dir`` path directory, you can simply run the script using the following command line:
 
 .. code-block:: console
 
-   (.venv) $ python3 create_database.py --config PyStructure
+   (.venv) $ python3 create_database.py --config PyStructure.conf
 
 The script will print information in the terminal as it runs. The result will be a ``.npy`` file, which contains a Python dictionary with the processed data. It will store this file in the ``Output`` folder (its path is specified in the configure file).
 
