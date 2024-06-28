@@ -194,6 +194,9 @@ class PyStructure:
             if dims_data[0]!=len(self.struct['ra_deg']) or dims_data[1]!=len(self.struct['SPEC_VAXIS']):
                 print("[ERROR]\tInput data_array does not match dimensions of 2D map or 3D cube")
                 return np.nan
+        elif len(dims_data)==3:
+            print("[ERROR]\tSo far not yet implemented for 3D cubes.")
+            return np.nan
 
         #step 1: regrid hexagonal to cartesian grid
         if len(dims_data)==1:
