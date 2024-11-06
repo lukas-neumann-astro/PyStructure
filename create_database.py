@@ -441,6 +441,12 @@ def create_database(just_source=None, quiet=False, conf=False):
 
         for jj in range(n_bands):
 
+            #check if comma is in filename (in case no unc file is provided, but comma is left)
+            if "," in bands["band_dir"][jj]:
+                bands["band_dir"][jj] = bands["band_dir"][jj].split(',')[0]
+                print("[WARNING]\t Comma removed from Band directory namefor "\
+                       + this_source)
+
             this_band_file = bands["band_dir"][jj] + this_source + bands["band_ext"][jj]
             if not path.exists(this_band_file):
                 print("[ERROR]\t Band "+bands["band_name"][jj] +" not found for "\
@@ -485,7 +491,10 @@ def create_database(just_source=None, quiet=False, conf=False):
                 continue
 
 #; MJ: ...AND ALSO THE UNCERTAINTIES FOR THE MAPS
-
+            if  not isinstance(bands["band_uc"][jj], str):
+                print("[WARNING]\t No UC Band "+bands["band_name"][jj]+" provided for "+
+                      this_source,)
+                continue
             this_uc_file = bands["band_dir"][jj] + this_source + bands["band_uc"][jj]
             if not path.exists(this_uc_file):
                 print("[WARNING]\t UC Band "+bands["band_name"][jj]+" not found for "+
