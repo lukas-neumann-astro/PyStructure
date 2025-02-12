@@ -130,7 +130,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 ## Roadmap
 
 - [x] More sophisticated masking (no single sightlines allowed)
-- [ ] Documentation
+- [x] Documentation
 
 See the [open issues](https://github.com/jdenbrok/PyStructure/issues) for a full list of proposed features (and known issues).
 
