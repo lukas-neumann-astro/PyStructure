@@ -146,7 +146,7 @@ def process_spectra(sources_data,
                         vmean_comb[jj] = ref_line_vmean[jj]
                     else:
                         vmean_comb[jj] = ref_line_vmean_hi[jj]
-                ref_line_vmean =vmean_comb
+                ref_line_vmean = vmean_comb
         if strict_mask:
             """
             Make sure that spatialy we do not have only connected pixels
@@ -186,7 +186,7 @@ def process_spectra(sources_data,
 
         #store the mask in the PyStructure
         this_data["SPEC_MASK"]= mask
-
+        this_data["INT_VAL_VSHUFF"] = ref_line_vmean
 
         #-------------------------------------------------------------------
         # Apply the CO-based mask to the EMPIRE lines and shuffle them
