@@ -203,6 +203,7 @@ class PyStructure:
             gridspacing = self.struct['beam_as']/3
             datamap, newx, newy = array_to_map(self.struct["ra_deg"],self.struct["dec_deg"],data_array,gridspacing=gridspacing)
 
+        datamap = np.fliplr(datamap)
         #step 2: prepare the header
         hdu = fits.PrimaryHDU(data=datamap)
 
@@ -221,8 +222,8 @@ class PyStructure:
         # Set CDELT1 and CDELT2 to the maximum pixel size
         pixel_scale = np.max(np.abs(np.diff(newx)))
         pixel_scale_str = "{:.2e}".format(pixel_scale)
-        wcs_header['CDELT1'] = float(pixel_scale_str)
-        wcs_header['CDELT2'] = float(pixel_scale_str)
+        wcs_header['CDELT1'] = -float(pixel_scale_str)*2/3
+        wcs_header['CDELT2'] = float(pixel_scale_str)*2/3
 
 
         wcs_header['RADESYS'] = 'FK5'
@@ -244,7 +245,9 @@ class PyStructure:
         # Append the WCS header to the PrimaryHDU
         hdul[0].header.extend(wcs.to_header(), update=True)
 
-
+        hdul[0].header['BMAJ']=self.struct['beam_as']/3600
+        hdul[0].header['BMIN']=self.struct['beam_as']/3600
+        hdul[0].header['BPA']=0
 
         #step 3: save the
         hdul.writeto(fname, overwrite=True)
