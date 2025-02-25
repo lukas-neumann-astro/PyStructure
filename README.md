@@ -153,7 +153,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Dr. Jakob den Brok - jakob.den_brok@cfa.harvard.edu
 
-Lukas Neumann - 
+Lukas Neumann - lukas.neumann@eso.org
 
 Project Link: [https://github.com/jdenbrok/PyStructure](https://github.com/jdenbrok/PyStructure)
 
