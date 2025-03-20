@@ -90,7 +90,7 @@
 <!-- GETTING STARTED -->
 ## Getting Started
 
-The PyStructure is a Python-based script. 
+The PyStructure is a Python-based script. Tested on Python 3.6 – 3.11. 
 
 ### Prerequisites
 
