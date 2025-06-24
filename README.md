@@ -120,7 +120,7 @@ That's it. Now you have the necessary files to run the script
 `python3 create_database.py --config PyStructure.conf`
 
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+_For more examples, please refer to the [Documentation](https://pystructure.readthedocs.io/en/latest/)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
