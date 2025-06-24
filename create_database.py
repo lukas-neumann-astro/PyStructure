@@ -391,7 +391,7 @@ def create_database(just_source=None, quiet=False, conf=False):
                              show = False
                              )
 
-        print("[INFO]\t Finshed generating Hexagonal Grid.")
+        print("[INFO]\t Finished generating Hexagonal Grid.")
     #---------------------------------------------------------------------
     # INITIIALIZE THE NEW STRUCTURE
     #--------------------------------------------------------------------
