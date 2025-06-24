@@ -94,7 +94,7 @@ def make_sampling_points(ra_ctr, dec_ctr,max_rad, spacing,mask, hdr_mask,
         #determine length of the diagonal
         max_rad = c_1.separation(c_2).value/2
         
-        print(f'{"[INFO]":<10}', f'Overlay Size set to {np.round(max_rad, 3)} deg.')
+        print(f'{"[INFO]":<10}', f'Overlay size set to {np.round(max_rad, 3)} deg.')
     #--------------------------------------------------------------
     #  Generate a hexagrid
     #--------------------------------------------------------------
