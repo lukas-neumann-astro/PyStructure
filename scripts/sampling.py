@@ -71,7 +71,7 @@ def make_sampling_points(ra_ctr, dec_ctr,max_rad, spacing,mask, hdr_mask,
 
     #Collaps the mask to two dimensions,, if needed
     if n_dim_mask == 3:
-        print("[INFO]\t Collapsing mask tp two dimensions.")
+        print(f'{"[INFO]":<10}', 'Collapsing mask tp two dimensions.')
         mask = np.sum(np.isfinite(mask), axis = 0)>=1
         mask_hdr = twod_head(hdr_mask)
     
@@ -94,7 +94,7 @@ def make_sampling_points(ra_ctr, dec_ctr,max_rad, spacing,mask, hdr_mask,
         #determine length of the diagonal
         max_rad = c_1.separation(c_2).value/2
         
-        print("[INFO]\t Overlay Size set to {}deg".format(np.round(max_rad, 3)))
+        print(f'{"[INFO]":<10}', f'Overlay Size set to {np.round(max_rad, 3)} deg.')
     #--------------------------------------------------------------
     #  Generate a hexagrid
     #--------------------------------------------------------------
@@ -119,7 +119,7 @@ def make_sampling_points(ra_ctr, dec_ctr,max_rad, spacing,mask, hdr_mask,
     keep_ct = len(keep)
 
     if keep_ct == 0:
-        print("[ERROR]\t No sampling points survive inside mask, returning NaNs.")
+        print(f'{"[ERROR]":<10}', 'No sampling points survive inside mask. Returning NaNs.')
         return np.nan, np.nan
 
     samp_ra = samp_ra[keep]
@@ -133,7 +133,7 @@ def make_sampling_points(ra_ctr, dec_ctr,max_rad, spacing,mask, hdr_mask,
     keep_ct = len(keep[0])
 
     if keep_ct == 0:
-        print("[ERROR]\t No sampling points survive inside mask, returning NaNs.")
+        print(f'{"[ERROR]":<10}', 'No sampling points survive inside mask. Returning NaNs.')
         return np.nan, np.nan
 
     samp_ra = samp_ra[keep]

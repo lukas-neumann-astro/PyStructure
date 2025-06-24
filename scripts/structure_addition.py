@@ -42,8 +42,8 @@ def add_band_to_struct(struct={}, band="", unit="", desc=""):
     new_struct = copy.copy(struct)
     if int_name in tags:
         #... this is risky. Delete and replace instead?
-        print("[WARNING]\t Band "+int_name+" already in structure.")
-        print("[WARNING]\t Resetting values and returning.")
+        print(f'{"[WARNING]":<10}', f'Band {int_name} already in structure.')
+        print(f'{"[WARNING]":<10}', 'Resetting values and returning.')
 
     new_struct[int_name] = np.nan
     new_struct[uc_name] = np.nan
@@ -105,8 +105,8 @@ def add_spec_to_struct (struct={}, line="", unit="", desc="", n_chan = 500):
 
     if int_name in tags:
         #... this is risky. Delete and replace instead?
-        print("[WARNING]\t Cube "+int_name+" already in structure.")
-        print("[WARNING]\t Resetting values and returning.")
+        print(f'{"[WARNING]":<10}', f'Cube {int_name} already in structure.')
+        print(f'{"[WARNING]":<10}', 'Resetting values and returning.')
 
     new_struct[int_name] = empty_spec
     #new_struct[vchan0_name] = np.nan

@@ -61,7 +61,7 @@ def get_pixel_scale(hdr,tol = 1e-6):
     step_y = abs(sphdist(ra[0], dec[0], ra[2], dec[2], True))
     
     if abs(step_x - step_y) >tol:
-        print("[WARNING]\t Pixel scale looks different in X and Y.")
+        print(f'{"[WARNING]":<10}', 'Pixel scale looks different in X and Y.')
         return  np.sqrt(step_x*step_y)
 
 

@@ -164,7 +164,7 @@ def conv_with_gauss(in_data,
         dim_data = np.shape(data)
 
         if dim_data[0]!=dim_wt[0] or dim_data[1]!=dim_wt[1]:
-            print("[ERROR]\t Weight image must match data in X and Y size. Returning.")
+            print(f'{"[ERROR]":<10}', 'Weight image must match data in X and Y size. Returning.')
             return
 
 
@@ -180,7 +180,7 @@ def conv_with_gauss(in_data,
 
     if hdr is None:
         if pix_deg is None or start_beam is None:
-            print("[ERROR]\t Requires a header OR a beam (start_beam=) and a plate scale (pix_deg=). Returning")
+            print(f'{"[ERROR]":<10}', 'Requires a header OR a beam (start_beam=) and a plate scale (pix_deg=). Returning.')
             return
 
     #---------------------------------------------------------------
@@ -217,10 +217,10 @@ def conv_with_gauss(in_data,
             if len(current_beam) ==2:
                 current_beam = [current_beam[0], current_beam[1], 0.0]
             else:
-                print("[ERROR]\t Beam format not known, give either float or a list of BMIN and BMAJ")
+                print(f'{"[ERROR]":<10}', 'Beam format not known, give either float or a list of BMIN and BMAJ')
                 return
         else:
-            print("[ERROR]\t Beam format not known, give either float or a list of BMIN and BMAJ")
+            print(f'{"[ERROR]":<10}', 'Beam format not known, give either float or a list of BMIN and BMAJ')
             return
 
 
@@ -243,10 +243,10 @@ def conv_with_gauss(in_data,
     info_deconv = result_deconv[3]
 
     if info_deconv[0] == False:
-        print("[ERROR]\t Cannot get kernel for this combination of beams. ")
+        print(f'{"[ERROR]":<10}', 'Cannot get kernel for this combination of beams.')
         return
     if info_deconv[1]:
-        print("[WARNING]\t The target and starting beam are very close.")
+        print(f'{"[WARNING]":<10}', 'The target and starting beam are very close.')
 
     # Figure out an appropriate size for the convolution kernel (forcing odd)
 
@@ -301,10 +301,10 @@ def conv_with_gauss(in_data,
 
         if len(dim_data) == 3:
             new_data = copy.deepcopy(data)
-            print("[INFO]\t Start Cube Convolution...")
+            print(f'{"[INFO]":<10}', 'Start cube convolution...')
             for spec_n in ProgressBar(range(dim_data[0])):
                 new_data[spec_n,:,:] = convolve_func(data[spec_n, :,:],kernel,method)
-            print("[INFO]\t Done Cube Convolution.")
+            print(f'{"[INFO]":<10}', 'Done cube convolution.')
             data = new_data
         else:
             data = convolve_func(data, kernel,method)
@@ -325,7 +325,7 @@ def conv_with_gauss(in_data,
             elif len(dim_wt) == 3:
                 weighted_data = data*weight
             else:
-                print("[ERROR]\t Weights can only be image or cube. Returning.")
+                print(f'{"[ERROR]":<10}', 'Weights can only be image or cube. Returning.')
                 return
 
             #Convolve the weighted data to the new resolution plane by plane
@@ -370,8 +370,8 @@ def conv_with_gauss(in_data,
     #; after convolution.
     if unc or perbeam:
         if in_weight is None:
-            print("[WARNING]\t Interaction of weighting with perbeam and unc is not clear.")
-            print("[WARNING]\t Proceed at your own risk here.")
+            print(f'{"[WARNING]":<10}', 'Interaction of weighting with perbeam and unc is not clear.')
+            print(f'{"[WARNING]":<10}', 'Proceed at your own risk here.')
 
         #    Work out the pixels per beam at the start of the convolution
         if hasattr(current_beam, '__len__'):
@@ -421,29 +421,29 @@ def conv_with_gauss(in_data,
     if quiet == False:
 
 
-        print("[INFO]\t Pixel Scale [as] = " + str(round_sig(as_per_pix,3)))
-        print("[INFO]\t Starting beam [as] = " + str(current_beam))
-        print("[INFO]\t Target FWHM [as] = " + str(target_beam))
+        print(f'{"[INFO]":<10}', f'Pixel scale [as] = {round_sig(as_per_pix,3)}')
+        print(f'{"[INFO]":<10}', f'Starting beam [as] = {current_beam}')
+        print(f'{"[INFO]":<10}', f'Target FWHM [as] = {target_beam}')
 
         kernel_beam = [kernel_bmaj, kernel_bmin, kernel_bpa]
 
-        print("[INFO]\t Convolution Kernel [as] = " + str(kernel_beam))
+        print(f'{"[INFO]":<10}', f'Convolution kernel [as] = {kernel_beam}')
         if hasattr(kern_size,"len"):
             if len(kern_size) == 2:
                 kern_size = kern_size[0]
 
-        print("[INFO]\t PSF Grid Size [pix] = "+str(kern_size))
-        print("[INFO]\t Flux Ratio = " + str(round_sig(flux_ratio)))
+        print(f'{"[INFO]":<10}', f'PSF grid size [pix] = {kern_size}')
+        print(f'{"[INFO]":<10}', f'Flux ratio = {round_sig(flux_ratio)}')
 
         unc_treated = "no"
         if unc:
             unc_treated = "yes"
-        print("[INFO]\t Treated as uncertainty = "+unc_treated)
+        print(f'{"[INFO]":<10}', f'Treated as uncertainty = {unc_treated}')
 
         beam_cor = "no"
         if perbeam:
             beam_cor = "yes"
-        print("[INFO]\t Correctd per beam units = "+beam_cor)
+        print(f'{"[INFO]":<10}', f'Correctd per beam units = {beam_cor}')
 
     #---------------------------------------------------------------
     # Update the Header and write the output

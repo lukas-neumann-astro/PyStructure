@@ -106,8 +106,8 @@ def make_axes(h,
 
         #; IF 'SIMPLE' IS CALLED THEN DO THE REALLY TRIVIAL THING:
         if simple:
-            print('[INFO]\t Using simple aproach to make axes.')
-            print('[WARNING]\t BE SURE THIS IS WHAT YOU WANT! It probably is not')
+            print(f'{"[INFO]":<10}', 'Using simple aproach to make axes.')
+            print(f'{"[WARNING]":<10}', 'BE SURE THIS IS WHAT YOU WANT! It probably is not!')
             raxis = np.arange(naxis1)
             rdif = raxis - (h['CRPIX1']-1)
             raxis = (rdif * h['CDELT1']+ h['CRVAL1'])

@@ -97,7 +97,7 @@ def process_spectra(sources_data,
 
 
         print("----------------------------------")
-        print("Source "+ this_source)
+        print(f'Source: {this_source}')
         print("----------------------------------")
 
         this_data = np.load(fname[ii],allow_pickle = True).item()
@@ -116,10 +116,10 @@ def process_spectra(sources_data,
         n_mask = 0
         if ref_line_method in ["all"]:
             n_mask = n_lines
-            print("[INFO]\tAll lines used as prior")
+            print(f'{"[INFO]":<10}', 'All lines used as prior.')
         elif isinstance(ref_line_method, int):
             n_mask = np.min([n_lines,ref_line_method])
-            print("[INFO]\tUsing first "+str(n_mask+1)+" lines as prior")
+            print(f'{"[INFO]":<10}', f'Using first {n_mask+1} lines as prior.')
         if n_mask>0:
             for n_mask_i in range(1,n_mask+1):
                 line_i = lines_data["line_name"][n_mask_i].upper()
@@ -132,7 +132,7 @@ def process_spectra(sources_data,
                 
         elif ref_line_method in ["ref+HI"]:
             if "hi" not in list(lines_data["line_name"]):
-                print("[WARNING]\t HI not in PyStructure. Skipping")
+                print(f'{"[WARNING]":<10}', 'HI not in PyStructure. Skipping.')
             else:
                 mask_hi, ref_line_vmean_hi, ref_line_vaxis_hi = construct_mask("HI", this_data, SN_processing)
                 
@@ -211,11 +211,11 @@ def process_spectra(sources_data,
 
 
             if not 'SPEC_VAL_'+line_name in this_data.keys():
-                print("[ERROR]\t Tag for line "+line_name+ "not found. Proceeding.")
+                print(f'{"[ERROR]":<10}', f'Tag for line {line_name} not found. Proceeding.')
                 continue
             this_spec = this_data['SPEC_VAL_'+line_name]
             if np.nansum(this_spec, axis = None)==0:
-                print("[ERROR]\t Line "+line_name+" appears empty. Skipping")
+                print(f'{"[ERROR]":<10}', f'Line {line_name} appears empty. Skipping.')
                 continue
 
             dim_sz = np.shape(this_spec)
@@ -277,7 +277,7 @@ def process_spectra(sources_data,
                 #this_data[tag_rms_dep] = mom_maps["rms"]
                 #-------------------------------------------------
             else:
-                print("[INFO]\t Intensity Map for "+lines_data["line_name"][jj]+"already provided, skipping." )
+                print(f'{"[INFO]":<10}', f'Intensity Map for {lines_data["line_name"][jj]} already provided. Skipping.')
 
             #Shuffle the line
             #;- DC modify 02 march 2017: define a reference velocity axis

@@ -78,7 +78,7 @@ def convolve(image, psf, noft = False, auto = False, correlate= False, no_pad = 
 
     if len(dim_im) != 2 or noft:
         if auto:
-            print("[ERROR]\t  Auto-correlation only for images with FFT. Returning")
+            print(f'{"[ERROR]":<10}', 'Auto-correlation only for images with FFT. Returning.')
             return image
         if correlate:
             return ndimage.convolve(image, psf)

@@ -45,15 +45,15 @@ def deconvolve_gauss(meas_maj,       # measured major axis
 
     # NO MINOR AXIS BEAM FOR BEAM
     if beam_min is None:
-        print("[INFO]\t Minor axis not supplied. Assuming round measurement.")
+        print(f'{"[INFO]":<10}', 'Minor axis not supplied. Assuming round measurement.')
         meas_min = meas_maj
     # NO POSITION ANGLE - DEFAULT TO 0
     if meas_pa is None:
-        print("[INFO]\t Position not supplied. Assuming measurement PA = 0.")
+        print(f'{"[INFO]":<10}', 'Position not supplied. Assuming measurement PA = 0.')
         meas_po = 0.
 
     if beam_pa is None:
-        print("[INFO]\t Position not supplied. Assuming beam PA = 0.")
+        print(f'{"[INFO]":<10}', 'Position not supplied. Assuming beam PA = 0.')
         beam_pa = 0.
 
     #-----------------------------------------------------------------------
@@ -90,7 +90,7 @@ def deconvolve_gauss(meas_maj,       # measured major axis
         src_min = 0
         src_pa = 0
 
-        print("[WARNING]\t Illegal alpha, beta, or s value.")
+        print(f'{"[WARNING]":<10}', 'Illegal alpha, beta, or s value.')
         worked = False
         # close to a point source:
         if (0.5*(s-t)<limit) and (alpha > - limit) and (beta>-limit):

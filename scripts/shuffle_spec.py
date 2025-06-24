@@ -65,22 +65,22 @@ def shuffle(spec,
     if new_vaxis is None:
         if not new_hdr is None:
             if quiet == False:
-                print("[INFO]\t Extracting new velocity axis from header.")
+                print(f'{"[INFO]":<10}', 'Extracting new velocity axis from header.')
 
             new_vaxis = make_axes(new_hdr, vonly = True)
         else:
             if quiet == False:
-                print("[INFO]\t Attempting to build a new axis from keywords.")
+                print(f'{"[INFO]":<10}', 'Attempting to build a new axis from keywords.')
             if new_cdelt is None:
-                print("[INFO]\t ... defaulting to original channel width.")
+                print(f'{"[INFO]":<10}', '... defaulting to original channel width.')
                 new_cdelt = vaxis[1] - vaxis[0]
 
             if new_crval is None or new_crpix is None:
-                print("[INFO]\t ... defaulting to original reference value.")
+                print(f'{"[INFO]":<10}', '... defaulting to original reference value.')
                 new_crval = vaxis[0]
                 new_crpix = 1
             if new_naxis is None:
-                print("[INFO]\t ... defaulting to original axis length.")
+                print(f'{"[INFO]":<10}', '... defaulting to original axis length.')
                 new_naxis = len(vaxis)
             new_vaxis = (np.arange(new_naxis) - (new_crpix-1.))*new_cdelt + new_crval
 
@@ -89,7 +89,7 @@ def shuffle(spec,
     if len(new_vaxis) == len(vaxis):
         if sum(new_vaxis != vaxis) == 0:
             if quiet == False:
-                print("[INFO]\t  Your new and old velocity axes are identical.")
+                print(f'{"[INFO]":<10}', 'Your new and old velocity axes are identical.')
             return spec
 
     # Note the number of channels.
@@ -114,7 +114,7 @@ def shuffle(spec,
     # simple regrid.
     if zero is None:
         if quiet == False:
-            print("[INFO]\t Defaulting to regridding mode.")
+            print(f'{"[INFO]":<10}', 'Defaulting to regridding mode.')
         zero = 0.
 
     if isinstance(zero, int) or isinstance(zero, float) or hasattr(zero, "__len__"):
@@ -124,7 +124,7 @@ def shuffle(spec,
             if len(zero) != n_spec:
                 correct = False
         if correct == False:
-            print("[ERROR]\t The zero point vector should have either 1 or n_spec elements. Returning.")
+            print(f'{"[ERROR]":<10}', 'The zero point vector should have either 1 or n_spec elements. Returning.')
             return np.nan
     # Note the number of channels in the old and new axis.
     orig_nchan = len(vaxis)
@@ -143,7 +143,7 @@ def shuffle(spec,
     valid_interp = [0,1,2]
     if not interp in valid_interp:
         if quiet == False:
-            print("[WARNING]\t Invalid interpolation selection. Defaulting to linear.")
+            print(f'{"[WARNING]":<10}', 'Invalid interpolation selection. Defaulting to linear.')
         interp = 1
 
 
@@ -224,7 +224,7 @@ def shuffle(spec,
         elif interp == 1:
             new_spec[overlap] = np.interp(new_vaxis[overlap], this_vaxis,this_spec)
         else:
-            print("[WARNING]\t Higher order interpolation not yet implemented.")
+            print(f'{"[WARNING]":<10}', 'Higher order interpolation not yet implemented.')
             new_spec[overlap] = np.interp(new_vaxis[overlap], this_vaxis,this_spec)
 
 

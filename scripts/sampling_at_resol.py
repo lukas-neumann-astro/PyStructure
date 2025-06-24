@@ -55,7 +55,7 @@ def sample_at_res(in_data,
 
     # Check if ra and dec arrays have same length
     if len(ra_samp) != len(dec_samp):
-        print("[ERROR]\t Need matching RA and Dec vector. Returning")
+        print(f'{"[ERROR]":<10}', 'Need matching RA and Dec vector. Returning.')
         return np.nan
 
     # Check if data given as string (need to load data first) or already given
@@ -63,7 +63,7 @@ def sample_at_res(in_data,
     if isinstance(in_data, str):
         # Data given in form of a string, need to load data
         if not path.exists(in_data):
-            print("[ERROR]\t File "+in_data+" not found. Returning. ")
+            print(f'{"[ERROR]":<10}', f'File {in_data} not found. Returning.')
             return ra_samp * np.nan
         data, hdr = fits.getdata(in_data, header = True)
 
@@ -72,17 +72,17 @@ def sample_at_res(in_data,
         if not in_hdr is None:
             hdr = in_hdr
         else:
-            print("[ERROR]\t Provide a valid header with the data")
+            print(f'{"[ERROR]":<10}', 'Provide a valid header with the data.')
             return ra_samp*np.nan
 
     # Check if target resolution was provided
     if target_res_as is None:
-        print("[WARNING]\t No target resolution specified.\n\t \
-              Taking this as zero and sampling at the native resolution.")
+        print(f'{"[WARNING]":<10}', 'No target resolution specified.\n \
+              Taking this as zero and sampling at the native resolution.')
         target_res_as = 0
 
     if target_hdr is None:
-        print("[WARNING]\t No target header. Will use native astrometry")
+        print(f'{"[WARNING]":<10}', 'No target header. Will use native astrometry.')
 
 
     dim_data = np.shape(data)
@@ -114,7 +114,7 @@ def sample_at_res(in_data,
         #data = np.array(new_datacube.unmasked_data[:,:,:])
         #hdr_out = hdr
     else:
-        print("[INFO]\t Already at target resolution.")
+        print(f'{"[INFO]":<10}', 'Already at target resolution.')
         hdr_out = copy.copy(hdr)
 
 
@@ -130,27 +130,27 @@ def sample_at_res(in_data,
     ######
     if is_cube:
         if abs(target_hdr["CDELT3"])<200:
-            print("[INFO]\t Overlay Cube in km/s, converting to m/s.")
+            print(f'{"[INFO]":<10}', 'Overlay cube in km/s, converting to m/s.')
             target_hdr["CDELT3"] = 1000 * target_hdr["CDELT3"]
             target_hdr["CRVAL3"] = 1000 * target_hdr["CRVAL3"]
             target_hdr["CUNIT3"] = "m/s"
 
         if abs(hdr["CDELT3"])<200:
-            print("[INFO]\t Line Cube in km/s, converting to m/s.")
+            print(f'{"[INFO]":<10}', 'Line cube in km/s, converting to m/s.')
             hdr_out["CDELT3"] = 1000 * hdr["CDELT3"]
             hdr_out["CRVAL3"] = 1000 * hdr["CRVAL3"]
             hdr_out["CUNIT3"] = "m/s"
 
         #check if cube vaxis is inverted (want delta v>0):
         if target_hdr["CDELT3"]<0:
-            print("[INFO]\t Target Cube has invertied vaxis. Re-inverting...")
+            print(f'{"[INFO]":<10}', 'Target cube has invertied vaxis. Re-inverting.')
             vaxis_inv = get_vaxis(target_hdr)
             target_hdr["CDELT3"] = -1* target_hdr["CDELT3"]
             target_hdr["CRPIX3"] = 1
             target_hdr["CRVAL3"] = vaxis_inv[-1]
 
         if hdr["CDELT3"]<0:
-            print("[INFO]\t Line Cube has invertied vaxis. Re-inverting...")
+            print(f'{"[INFO]":<10}', 'Line cube has invertied vaxis. Re-inverting.')
             vaxis_inv = get_vaxis(hdr_out)
             hdr_out["CDELT3"] = -1* hdr["CDELT3"]
             hdr_out["CRPIX3"] = 1
@@ -166,9 +166,9 @@ def sample_at_res(in_data,
         spec_res = abs(hdr["CDELT3"])/1000
         fwhm_factor = np.sqrt(8*np.log(2))
         if spec_res >=spec_smooth[0]:
-            print("[INFO]\t No spectral smoothing; already at target resolution.")
+            print(f'{"[INFO]":<10}', 'No spectral smoothing; already at target resolution.')
         else:
-            print("[INFO]\t Do spectral smoothing to {} km/s".format(spec_smooth[0]))
+            print(f'{"[INFO]":<10}', f'Do spectral smoothing to {spec_smooth[0]} km/s.')
 
 
             #check the method:
@@ -197,7 +197,7 @@ def sample_at_res(in_data,
                     n_ratio+=1
                 new_len = len(vaxis_native)//n_ratio
                 if n_ratio==1:
-                    print("[INFO]\t No spectral smoothing; already at target resolution.")
+                    print(f'{"[INFO]":<10}', 'No spectral smoothing; already at target resolution.')
                 else:
                     new_vaxis = np.array([np.nanmean(vaxis_native[n_ratio*j:n_ratio*(j+1)]) for j in range(new_len)])
                     data = np.array([np.nanmean(data[n_ratio*j:n_ratio*(j+1),:,:], axis=0) for j in range(new_len)])
@@ -253,10 +253,10 @@ def sample_at_res(in_data,
             out_header["BMIN"]=target_res_as/3600
             out_header["LINE"]=line_name
             fits.writeto(path_save_fits+galaxy+'_'+str(line_name)+'_{}as.fits'.format(target_res_as), data=data_out, header=out_header, overwrite=True)
-            print("[INFO]\t Convolved Fits file has been saved.")
+            print(f'{"[INFO]":<10}', 'Convolved fits file has been saved.')
 
     else:
-        print("[INFO]\t No alignment because no target header supplied.")
+        print(f'{"[INFO]":<10}', 'No alignment because no target header supplied.')
 
     #--------------------------------------------------------------
     #   Sample

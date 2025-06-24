@@ -229,7 +229,7 @@ def create_database(just_source=None, quiet=False, conf=False):
     """
 
     if quiet == False:
-        print("[INFO]\t Reading in galaxy parameters.")
+        print(f'{"[INFO]":<10}', 'Reading in galaxy parameters.')
     names_glxy = ["galaxy", "ra_ctr", "dec_ctr", "dist_mpc", "e_dist_mpc",
                   "incl_deg", "e_incl_deg","posang_deg", "e_posang_deg",
                   "r25", "e_r25"]
@@ -251,7 +251,7 @@ def create_database(just_source=None, quiet=False, conf=False):
     # GENERATE THE EMPTY DATA STRUCTURE
     # -----------------------------------------------------------------
     if quiet == False:
-        print("[INFO]\t Generating new dictionary.")
+        print(f'{"[INFO]":<10}', 'Generating new dictionary.')
     empty_structure = empire_record_header()
 
     # Add the bands to the structure
@@ -267,7 +267,7 @@ def create_database(just_source=None, quiet=False, conf=False):
                                          desc=bands["band_desc"][ii])
 
     if quiet == False:
-        print("[INFO]\t {} band(s) added to structure.".format(n_bands))
+        print(f'{"[INFO]":<10}', f'{n_bands} band(s) added to structure.')
 
 
     # Add the cubes to the structure
@@ -289,7 +289,7 @@ def create_database(just_source=None, quiet=False, conf=False):
                                                     desc=cubes["line_desc"][ii])
 
     if quiet == False:
-        print("[INFO]\t {} cube(s) added to structure.".format(n_cubes))
+        print(f'{"[INFO]":<10}', f'{n_cubes} cube(s) added to structure.')
 
     #-----------------------------------------------------------------
     # LOOP OVER SOURCES
@@ -309,7 +309,7 @@ def create_database(just_source=None, quiet=False, conf=False):
         if not this_source in list(glxy_data["galaxy"]):
             run_success[ii]=False
 
-            print("[ERROR]\t "+this_source+" Not in galaxy table.")
+            print(f'{"[ERROR]":<10}', f'{this_source} not in galaxy table.')
 
             continue
 
@@ -322,7 +322,7 @@ def create_database(just_source=None, quiet=False, conf=False):
                 continue
 
         print("-------------------------------")
-        print("Galaxy "+this_source)
+        print(f'Source: {this_source}')
         print("-------------------------------")
 
     #---------------------------------------------------------------------
@@ -342,7 +342,7 @@ def create_database(just_source=None, quiet=False, conf=False):
         if not path.exists(overlay_fname):
             run_success[ii]=False
 
-            print("[ERROR]\t No Overlay data found. Skipping "+this_source+". Check path to overlay file.")
+            print(f'{"[ERROR]":<10}', f'No Overlay data found. Skipping {this_source}. Check path to overlay file.')
             overlay_hdr_list.append("")
             overlay_slice_list.append("")
             continue
@@ -356,7 +356,7 @@ def create_database(just_source=None, quiet=False, conf=False):
             run_success[ii]=False
             overlay_hdr_list.append("")
             overlay_slice_list.append("")
-            print("[ERROR]\t 4D cube provided. Need 3D overlay. Skipping "+this_source)
+            print(f'{"[ERROR]":<10}', f'4D cube provided. Need 3D overlay. Skipping {this_source}.')
             continue
 
         #add slice of overlay
@@ -374,7 +374,7 @@ def create_database(just_source=None, quiet=False, conf=False):
         elif resolution == 'angular':
             target_res_as = target_res
         else:
-            print('[ERROR]\t Resolution keyword has to be "native","angular" or "physical".')
+            print(f'{"[ERROR]":<10}', 'Resolution keyword has to be "native", "angular" or "physical".')
 
 
         # Determine
@@ -391,7 +391,7 @@ def create_database(just_source=None, quiet=False, conf=False):
                              show = False
                              )
 
-        print("[INFO]\t Finished generating Hexagonal Grid.")
+        print(f'{"[INFO]":<10}', 'Finished generating hexagonal grid.')
     #---------------------------------------------------------------------
     # INITIIALIZE THE NEW STRUCTURE
     #--------------------------------------------------------------------
@@ -444,13 +444,11 @@ def create_database(just_source=None, quiet=False, conf=False):
             #check if comma is in filename (in case no unc file is provided, but comma is left)
             if "," in bands["band_dir"][jj]:
                 bands["band_dir"][jj] = bands["band_dir"][jj].split(',')[0]
-                print("[WARNING]\t Comma removed from Band directory namefor "\
-                       + this_source)
+                print(f'{"[WARNING]":<10}', f'Comma removed from band directory name for {this_source}.')
 
             this_band_file = bands["band_dir"][jj] + this_source + bands["band_ext"][jj]
             if not path.exists(this_band_file):
-                print("[ERROR]\t Band "+bands["band_name"][jj] +" not found for "\
-                       + this_source)
+                print(f'{"[ERROR]":<10}', f'Band {bands["band_name"][jj]} not found for {this_source}.')
 
                 continue
 
@@ -475,8 +473,7 @@ def create_database(just_source=None, quiet=False, conf=False):
             if this_tag_name in this_data:
                 this_data[this_tag_name] = this_int
             else:
-                print("[ERROR]\t  I had trouble matching tag "+this_tag_name+
-                      " to the database.")
+                print(f'{"[ERROR]":<10}', f'I had trouble matching tag {this_tag_name} to the database.')
                 continue
 
 #; MJ: I AM ADDING THE CORRESPONDING UNITS
@@ -486,22 +483,18 @@ def create_database(just_source=None, quiet=False, conf=False):
             if this_tag_name in this_data:
                 this_data[this_tag_name] = this_unit
             else:
-                print("[ERROR]\t  I had trouble matching tag "+this_tag_name+
-                      " to the database.")
+                print(f'{"[ERROR]":<10}', f'I had trouble matching tag {this_tag_name} to the database.')
                 continue
 
 #; MJ: ...AND ALSO THE UNCERTAINTIES FOR THE MAPS
             if  not isinstance(bands["band_uc"][jj], str):
-                print("[WARNING]\t No UC Band "+bands["band_name"][jj]+" provided for "+
-                      this_source,)
+                print(f'{"[WARNING]":<10}', f'No uncertainty band {bands["band_name"][jj]} provided for {this_source}.')
                 continue
             this_uc_file = bands["band_dir"][jj] + this_source + bands["band_uc"][jj]
             if not path.exists(this_uc_file):
-                print("[WARNING]\t UC Band "+bands["band_name"][jj]+" not found for "+
-                      this_source,)
+                print(f'{"[WARNING]":<10}', f'Uncertainty band {bands["band_name"][jj]} not found for {this_source}.')
                 continue
-            print('[INFO]\t Sampling at resolution band '+bands["band_name"][jj]
-                   +' for '+this_source)
+            print(f'{"[INFO]":<10}', f'Sampling at resolution band {bands["band_name"][jj]} for {this_source}.')
 
             this_uc, this_hdr = sample_at_res(in_data = this_uc_file,
                                     ra_samp = samp_ra,
@@ -514,8 +507,7 @@ def create_database(just_source=None, quiet=False, conf=False):
             if this_tag_name in this_data:
                 this_data[this_tag_name] = this_uc
             else:
-                print("[ERROR]\t  I had trouble matching tag "+this_tag_name+
-                      " to the database.")
+                print(f'{"[ERROR]":<10}', f'I had trouble matching tag {this_tag_name} to the database.')
                 continue
 
 
@@ -529,12 +521,10 @@ def create_database(just_source=None, quiet=False, conf=False):
 
             if not path.exists(this_line_file):
 
-                print("[ERROR]\t Line "+cubes["line_name"][jj]+" not found for "+
-                      this_source)
+                print(f'{"[ERROR]":<10}', f'Line {cubes["line_name"][jj]} not found for {this_source}.')
 
                 continue
-            print('[INFO]\t Sampling at resolution band '+cubes["line_name"][jj]
-                   +' for '+this_source)
+            print(f'{"[INFO]":<10}', f'Sampling at resolution band {cubes["line_name"][jj]} for {this_source}.')
 
             if "/beam" in cubes["line_unit"][jj]:
                 perbeam = True
@@ -558,8 +548,7 @@ def create_database(just_source=None, quiet=False, conf=False):
             if this_tag_name in this_data:
                 this_data[this_tag_name] = this_spec
             else:
-                print("[ERROR]\t  I had trouble matching tag "+this_tag_name+
-                      " to the database.")
+                print(f'{"[ERROR]":<10}', f'I had trouble matching tag {this_tag_name} to the database.')
                 continue
 
             #this_line_hdr = fits.getheader(this_line_file)
@@ -582,10 +571,9 @@ def create_database(just_source=None, quiet=False, conf=False):
             if not cubes["band_ext"].isnull()[jj]:
 
                 this_band_file = cubes["line_dir"][jj] + this_source + cubes["band_ext"][jj]
-                print("[INFO]\t For Cube "+cubes["line_name"][jj] +" a 2D map is provided.")
+                print(f'{"[INFO]":<10}', f'For Cube {cubes["line_name"][jj]} a 2D map is provided.')
                 if not path.exists(this_band_file):
-                    print("[ERROR]\t Band "+cubes["line_name"][jj] +" not found for "\
-                           + this_source)
+                    print(f'{"[ERROR]":<10}', f'Band {cubes["line_name"][jj]} not found for {this_source}.')
                     print(this_band_file)
 
                     continue
@@ -608,18 +596,15 @@ def create_database(just_source=None, quiet=False, conf=False):
                 if this_tag_name in this_data:
                     this_data[this_tag_name] = this_int
                 else:
-                    print("[ERROR]\t  I had trouble matching tag "+this_tag_name+
-                          " to the database.")
+                    print(f'{"[ERROR]":<10}', f'I had trouble matching tag {this_tag_name} to the database.')
                     continue
 
 
                 this_uc_file = cubes["line_dir"][jj] + this_source + str(cubes["band_uc"][jj])
                 if not path.exists(this_uc_file):
-                    print("[WARNING]\t UC Band "+cubes["line_name"][jj]+" not found for "+
-                          this_source,)
+                    print(f'{"[WARNING]":<10}', f'UC Band {cubes["line_name"][jj]} not found for {this_source}.')
                     continue
-                print('[INFO]\t Sampling at resolution band '+cubes["line_name"][jj]
-                       +' for '+this_source)
+                print(f'{"[INFO]":<10}', f'Sampling at resolution band {cubes["line_name"][jj]} for {this_source}.')
 
                 this_uc, this_hdr = sample_at_res(in_data = this_uc_file,
                                         ra_samp = samp_ra,
@@ -632,11 +617,10 @@ def create_database(just_source=None, quiet=False, conf=False):
                 if this_tag_name in this_data:
                     this_data[this_tag_name] = this_uc
                 else:
-                    print("[ERROR]\t  I had trouble matching tag "+this_tag_name+
-                      " to the database.")
+                    print(f'{"[ERROR]":<10}', f'I had trouble matching tag {this_tag_name}to the database.')
                     continue
 
-            print("[INFO]\t Done with line " + cubes["line_name"][jj])
+            print(f'{"[INFO]":<10}', f'Done with line {cubes["line_name"][jj]}.')
 
         # Save the database
         if resolution == 'native':
@@ -654,7 +638,7 @@ def create_database(just_source=None, quiet=False, conf=False):
     # NOW PROCESS THE SPECTRA
     #---------------------------------------------------------------------
     if not quiet:
-        print("[INFO]\t Start processing Spectra.")
+        print(f'{"[INFO]":<10}', 'Start processing spectra.')
     process_spectra(glxy_data,
                     galaxy_list,
                     cubes,fnames,
@@ -673,7 +657,7 @@ def create_database(just_source=None, quiet=False, conf=False):
             os.makedirs(folder_savefits)
         # Warning
         if spacing_per_beam < 4:
-            print('[WARNING]\t Spacing per beam too small for proper resampling to pixel grid.')
+            print(f'{"[WARNING]":<10}', 'Spacing per beam too small for proper resampling to pixel grid.')
 
         #iterate over the individual sources
         save_mom_to_fits(fnames,
@@ -695,7 +679,7 @@ args, leftovers = parser.parse_known_args()
 #check if config file provided
 config_prov = False
 if not args.config is None:
-    print("[INFO]\t Configure File Provided.")
+    print(f'{"[INFO]":<10}', 'Configure file provided.')
     config_prov = True
     conf_file = args.config
     #if folder exists, we delete it first to make sure it contains no files
@@ -719,9 +703,9 @@ if config_prov:
     shutil.rmtree('./Temp_Files')
 
 if all(run_success):
-    print("[INFO]\t Run finished succesfully")
+    print(f'{"[INFO]":<10}', 'Run finished succesfully.')
 
 else:
-    print("[WARNING]\t Run Terminated with potential critical error!")
+    print(f'{"[WARNING]":<10}', 'Run terminated with potential critical error!')
 
 #print_warning(0)
