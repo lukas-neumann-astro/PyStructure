@@ -173,6 +173,7 @@ class PyStructure:
         ratio["llimit"] = ratio_ll
 
         return ratio
+    
     def export_fits(self,data_array,fname,adjust_header=None, verbose=False):
         """
         Export a 2D or 3D PyStructure array to a FITS file.
@@ -182,20 +183,20 @@ class PyStructure:
         """
         if isinstance(data_array, str):
             if verbose:
-                print("[INFO]\tInterpreting input as existing PyStructure key")
+                print(f'{"[INFO]":<10}', 'Interpreting input as existing PyStructure key.')
             data_array = self.struct[data_array]
         dims_data = np.shape(data_array)
         #make sure data data array has the same shape as either a 2D or 3D cube
         if len(dims_data)==1:
             if dims_data[0]!=len(self.struct['ra_deg']):
-                print("[ERROR]\tInput data_array does not match dimensions of 2D map or 3D cube")
+                print(f'{"[ERROR]":<10}', 'Input data_array does not match dimensions of 2D map or 3D cube.')
                 return np.nan
         elif len(dims_data)==2:
             if dims_data[0]!=len(self.struct['ra_deg']) or dims_data[1]!=len(self.struct['SPEC_VAXIS']):
-                print("[ERROR]\tInput data_array does not match dimensions of 2D map or 3D cube")
+                print(f'{"[ERROR]":<10}', 'Input data_array does not match dimensions of 2D map or 3D cube.')
                 return np.nan
         elif len(dims_data)==3:
-            print("[ERROR]\tSo far not yet implemented for 3D cubes.")
+            print(f'{"[ERROR]":<10}', 'So far not yet implemented for 3D cubes.')
             return np.nan
 
         #step 1: regrid hexagonal to cartesian grid
