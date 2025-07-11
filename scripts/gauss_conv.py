@@ -18,10 +18,10 @@ def convolve_func(data, kernel, method = "direct"):
     Perform either the direct or the fast fourier transform convolution
     """
     if method == "direct":
-        conv_data = convolve(data,kernel,allow_huge=True, nan_treatment='fill',)
+        conv_data = convolve(data,kernel,allow_huge=True)
     else:
 
-        conv_data = convolve_fft(data,kernel,allow_huge=True, nan_treatment='fill',)
+        conv_data = convolve_fft(data,kernel,allow_huge=True)
 
     return conv_data
 

@@ -43,6 +43,9 @@ MODIFICATION HISTORY
             - Improve masking -> Remove spurious spatial spikes
     - v3.0.1 January 2024
             - Fix error map convolution handeling
+    - v3.1.0 July 2025
+            - Merge publishes version with Uni Bonn version
+            - Implement feature to complete PyStructre
 
 
 """
@@ -58,10 +61,12 @@ import os.path
 from os import path
 import shutil
 from astropy.io import fits
-from datetime import date
+from datetime import date, datetime
+import re
 import argparse
 today = date.today()
 date_str = today.strftime("%Y_%m_%d")
+import glob
 
 import sys
 sys.path.append("./scripts/")
@@ -155,6 +160,14 @@ define the way the spectral smoothing should be performed:
 """
 spec_smooth_method = "binned"
 
+"""
+Define how pyStructure should be run
+- overwrite: A file will be created and overwritten if the PyStructure code is run
+- fill: When running the PyStructure code, opens an exisitng PyStructure and completes it with additional lines
+- archive: each run creates a new copy, ensuring archiving of all runs (not yet implemented)
+"""
+structure_creation ="overwrite"
+
 
 """
 Save the created moment maps as fits file
@@ -190,6 +203,31 @@ def empire_record_header():
 
     return new_structure_empire
 
+def fill_checker(fname, sample_coord, bands, cubes):
+    """
+    Function that checks if a given PyStructure exists and matches in terms of the sampling points.
+    :param fname: PyStructure Filename
+    :param sample_coord: [samp_ra, samp_dec] - The sample coordinates. Used to match to existing PySturcture.
+    :param bands:
+    :param cubes
+    """
+
+    this_data = np.load(fname,allow_pickle = True).item()
+
+    #Check 1: Enusre that the coordinates are identical (1e-12 to allow wiggle room due to rounding errors)
+    if abs(np.nansum(this_data['ra_deg']-sample_coord[0])) + abs(np.nansum(this_data['dec_deg']-sample_coord[1]))>1e-12:
+        raise ValueError('The PyStructure does not match. Please run code setting the "structure_creation" key to "overwrite"')
+    
+    #Check 2: Now check which bands and cubes 
+    fill_bands = []
+    for band_nm in bands["band_name"]:
+        if f'INT_VAL_{band_nm.upper()}' in  list(this_data.keys()):
+            fill_bands.append(band_nm)
+    fill_cubes = []
+    for cube_nm in cubes["line_name"]:
+        if f'INT_VAL_{cube_nm.upper()}' in  list(this_data.keys()):
+            fill_cubes.append(cube_nm)
+    return this_data, fill_bands,fill_cubes
 
 def create_temps(conf_file):
     """
@@ -251,7 +289,7 @@ def create_database(just_source=None, quiet=False, conf=False):
     # GENERATE THE EMPTY DATA STRUCTURE
     # -----------------------------------------------------------------
     if quiet == False:
-        print(f'{"[INFO]":<10}', 'Generating new dictionary.')
+        print(f'{"[INFO]":<10}', 'Generating (new) dictionary.')
     empty_structure = empire_record_header()
 
     # Add the bands to the structure
@@ -267,7 +305,7 @@ def create_database(just_source=None, quiet=False, conf=False):
                                          desc=bands["band_desc"][ii])
 
     if quiet == False:
-        print(f'{"[INFO]":<10}', f'{n_bands} band(s) added to structure.')
+        print(f'{"[INFO]":<10}', f'{n_bands} band(s) included in structure.')
 
 
     # Add the cubes to the structure
@@ -289,7 +327,7 @@ def create_database(just_source=None, quiet=False, conf=False):
                                                     desc=cubes["line_desc"][ii])
 
     if quiet == False:
-        print(f'{"[INFO]":<10}', f'{n_cubes} cube(s) added to structure.')
+        print(f'{"[INFO]":<10}', f'{n_cubes} cube(s) included in final structure.')
 
     #-----------------------------------------------------------------
     # LOOP OVER SOURCES
@@ -325,11 +363,11 @@ def create_database(just_source=None, quiet=False, conf=False):
         print(f'Source: {this_source}')
         print("-------------------------------")
 
-    #---------------------------------------------------------------------
-    # MAKE SAMPLING POINTS FOR THIS TARGET
-    #--------------------------------------------------------------------
+        #---------------------------------------------------------------------
+        # MAKE SAMPLING POINTS FOR THIS TARGET
+        #--------------------------------------------------------------------
 
-     #Generate sampling points using the overlay file provided as a template and half-beam spacing.
+        #Generate sampling points using the overlay file provided as a template and half-beam spacing.
 
 
         # check if overlay name given with or without the source name in it:
@@ -377,6 +415,56 @@ def create_database(just_source=None, quiet=False, conf=False):
             print(f'{"[ERROR]":<10}', 'Resolution keyword has to be "native", "angular" or "physical".')
 
 
+        # Save the database
+        if resolution == 'native':
+            res_suffix = str(target_res_as).split('.')[0]+'.'+str(target_res_as).split('.')[1][0]+'as'
+        elif resolution == 'angular':
+            res_suffix = str(target_res_as).split('.')[0]+'as'
+        elif resolution == 'physical':
+            res_suffix = str(target_res).split('.')[0]+'pc'
+
+        #Define filename used to store the PyStructure
+        fname_dict = out_dic+this_source+"_data_struct_"+res_suffix+'_'+date_str+'.npy'
+
+        if "archive" in structure_creation:
+            #check if basic file already exists. Otherwise, start with version numbering
+            if os.path.exists(fname_dict):
+                file_version=1
+                fname_dict = fname_dict[:-4]+f"_v{file_version}.npy"
+                while os.path.exists(fname_dict):
+                    file_version+=1
+                    fname_dict = out_dic+this_source+"_data_struct_"+res_suffix+'_'+date_str+f'_v{file_version}.npy'
+                if quiet == False:
+                    print(f'{"[INFO]":<10}', f'Creating file version v{file_version}.')
+
+        #check if an existing PyStructure should be completed and the user has provided a PyStructure file
+        if "fill" in structure_creation:
+            if 'fname_fill' in globals():
+                if os.path.exists(out_dic+fname_fill):
+                    fname_dict = out_dic+fname_fill
+                #need to check that most recent fname_dict exists
+            else:
+                if not os.path.isfile(fname_dict):
+        
+                    print(f'{"[WARNING]":<10}', f'File {os.path.basename(fname_dict)} not found. Looking for most recent matching file...')
+        
+                    dir_path = os.path.dirname(fname_dict) or '.'
+                    base_prefix = os.path.basename(fname_dict)[:-14]
+
+                    possible_files = glob.glob(dir_path+"/"+base_prefix+"*")
+        
+        
+                    if not possible_files:
+                        raise FileNotFoundError(f"No file matching pattern '{base_prefix}_YYYY_MM_DD.npy' found in '{dir_path}'.")
+
+                    # Sort by date descending and take the most recent one
+        
+                    fname_dict = np.sort(glob.glob(dir_path+"/"+base_prefix+"*"))[-1]
+                    print(f'{"[INFO]":<10}',f"Using most recent file instead: {os.path.basename(fname_dict)}")
+        
+        fnames[ii] = fname_dict        
+            
+        
         # Determine
         spacing = target_res_as / 3600. / spacing_per_beam
 
@@ -390,39 +478,42 @@ def create_database(just_source=None, quiet=False, conf=False):
                              overlay_in = overlay_fname,
                              show = False
                              )
-
-        print(f'{"[INFO]":<10}', 'Finished generating hexagonal grid.')
-    #---------------------------------------------------------------------
-    # INITIIALIZE THE NEW STRUCTURE
-    #--------------------------------------------------------------------
+        if not quiet:
+            print(f'{"[INFO]":<10}', 'Finished generating hexagonal grid.')
+        #---------------------------------------------------------------------
+        # INITIIALIZE THE NEW STRUCTURE
+        #--------------------------------------------------------------------
         n_pts = len(samp_ra)
 
         # The following lines do this_data=replicate(empty_struct, 1)
 
-        this_data = {}
+        if 'fill' in structure_creation:
+            this_data, fill_bands, fill_cubes = fill_checker(fname_dict, [samp_ra, samp_dec], bands, cubes) 
+        else:
+            this_data = {}
 
-        #for n in range(n_pts):
-        for key in empty_structure.keys():
-                #this_data.setdefault(key, []).append(empty_structure[key])
-                this_data[key]=empty_structure[key]
+            #for n in range(n_pts):
+            for key in empty_structure.keys():
+                    #this_data.setdefault(key, []).append(empty_structure[key])
+                    this_data[key]=empty_structure[key]
 
-        this_tag_name = 'SPEC_VCHAN0'
-        this_data[this_tag_name] = ov_hdr["CRVAL3"]
-        this_tag_name = 'SPEC_DELTAV'
-        this_data[this_tag_name] = ov_hdr["CDELT3"]
-        this_tag_name = 'SPEC_CRPIX'
-        this_data[this_tag_name] = ov_hdr["CRPIX3"]
-        # Some basic parameters for each galaxy:
-        this_data["source"] = this_source
-        this_data["ra_deg"] = samp_ra
-        this_data["dec_deg"] = samp_dec
-        this_data["dist_mpc"] = glxy_data["dist_mpc"][ii_list]
-        this_data["posang_deg"] = glxy_data["posang_deg"][ii_list]
-        this_data["incl_deg"] = glxy_data["incl_deg"][ii_list]
-        this_data["beam_as"] = target_res_as
+            this_tag_name = 'SPEC_VCHAN0'
+            this_data[this_tag_name] = ov_hdr["CRVAL3"]
+            this_tag_name = 'SPEC_DELTAV'
+            this_data[this_tag_name] = ov_hdr["CDELT3"]
+            this_tag_name = 'SPEC_CRPIX'
+            this_data[this_tag_name] = ov_hdr["CRPIX3"]
+            # Some basic parameters for each galaxy:
+            this_data["source"] = this_source
+            this_data["ra_deg"] = samp_ra
+            this_data["dec_deg"] = samp_dec
+            this_data["dist_mpc"] = glxy_data["dist_mpc"][ii_list]
+            this_data["posang_deg"] = glxy_data["posang_deg"][ii_list]
+            this_data["incl_deg"] = glxy_data["incl_deg"][ii_list]
+            this_data["beam_as"] = target_res_as
 
-        # Convert to galactocentric cylindrical coordinates
-        rgal_deg, theta_rad = deproject(samp_ra, samp_dec,
+            # Convert to galactocentric cylindrical coordinates
+            rgal_deg, theta_rad = deproject(samp_ra, samp_dec,
                                         [glxy_data["posang_deg"][ii_list],
                                          glxy_data["incl_deg"][ii_list],
                                          glxy_data["ra_ctr"][ii_list],
@@ -430,16 +521,26 @@ def create_database(just_source=None, quiet=False, conf=False):
                                         ], vector = True)
 
 
-        this_data["rgal_as"] = rgal_deg * 3600
-        this_data["rgal_kpc"] = np.deg2rad(rgal_deg)*this_data["dist_mpc"]*1e3
-        this_data["rgal_r25"] = rgal_deg/(glxy_data["r25"][ii_list]/60.)
-        this_data["theta_rad"] = theta_rad
+            this_data["rgal_as"] = rgal_deg * 3600
+            this_data["rgal_kpc"] = np.deg2rad(rgal_deg)*this_data["dist_mpc"]*1e3
+            this_data["rgal_r25"] = rgal_deg/(glxy_data["r25"][ii_list]/60.)
+            this_data["theta_rad"] = theta_rad
 
         #---------------------------------------------------------------------
         # LOOP OVER MAPS, CONVOLVING AND SAMPLING
         #--------------------------------------------------------------------
 
         for jj in range(n_bands):
+            if 'fill' in structure_creation:
+                if bands["band_name"][jj] in fill_bands:
+                    continue
+                #need to add an entry into the PyStructure
+                else:
+                    this_data = add_band_to_struct(struct=this_data,
+                                         band=bands["band_name"][jj],
+                                         unit=bands["band_unit"][jj],
+                                         desc=bands["band_desc"][jj])
+                    
 
             #check if comma is in filename (in case no unc file is provided, but comma is left)
             if "," in bands["band_dir"][jj]:
@@ -476,7 +577,7 @@ def create_database(just_source=None, quiet=False, conf=False):
                 print(f'{"[ERROR]":<10}', f'I had trouble matching tag {this_tag_name} to the database.')
                 continue
 
-#; MJ: I AM ADDING THE CORRESPONDING UNITS
+            #; MJ: I AM ADDING THE CORRESPONDING UNITS
 
             this_unit = bands["band_unit"][jj]
             this_tag_name = 'INT_UNIT_' + bands["band_name"][jj].upper()
@@ -486,7 +587,7 @@ def create_database(just_source=None, quiet=False, conf=False):
                 print(f'{"[ERROR]":<10}', f'I had trouble matching tag {this_tag_name} to the database.')
                 continue
 
-#; MJ: ...AND ALSO THE UNCERTAINTIES FOR THE MAPS
+            #; MJ: ...AND ALSO THE UNCERTAINTIES FOR THE MAPS
             if  not isinstance(bands["band_uc"][jj], str):
                 print(f'{"[WARNING]":<10}', f'No uncertainty band {bands["band_name"][jj]} provided for {this_source}.')
                 continue
@@ -516,6 +617,16 @@ def create_database(just_source=None, quiet=False, conf=False):
             #--------------------------------------------------------------------
 
         for jj in range(n_cubes):
+
+            if 'fill' in structure_creation:
+                if cubes["line_name"][jj] in fill_cubes:
+                    continue
+                else:
+                    this_data = add_spec_to_struct(struct=this_data,
+                                         line=cubes["line_name"][jj],
+                                         unit=cubes["line_unit"][jj],
+                                         desc=cubes["line_desc"][jj])
+
             this_line_file = cubes["line_dir"][jj] + this_source + cubes["line_ext"][jj]
 
 
@@ -571,7 +682,8 @@ def create_database(just_source=None, quiet=False, conf=False):
             if not cubes["band_ext"].isnull()[jj]:
 
                 this_band_file = cubes["line_dir"][jj] + this_source + cubes["band_ext"][jj]
-                print(f'{"[INFO]":<10}', f'For Cube {cubes["line_name"][jj]} a 2D map is provided.')
+                if not quiet:
+                    print(f'{"[INFO]":<10}', f'For Cube {cubes["line_name"][jj]} a 2D map is provided.')
                 if not path.exists(this_band_file):
                     print(f'{"[ERROR]":<10}', f'Band {cubes["line_name"][jj]} not found for {this_source}.')
                     print(this_band_file)
@@ -604,7 +716,8 @@ def create_database(just_source=None, quiet=False, conf=False):
                 if not path.exists(this_uc_file):
                     print(f'{"[WARNING]":<10}', f'UC Band {cubes["line_name"][jj]} not found for {this_source}.')
                     continue
-                print(f'{"[INFO]":<10}', f'Sampling at resolution band {cubes["line_name"][jj]} for {this_source}.')
+                if not quiet:
+                    print(f'{"[INFO]":<10}', f'Sampling at resolution band {cubes["line_name"][jj]} for {this_source}.')
 
                 this_uc, this_hdr = sample_at_res(in_data = this_uc_file,
                                         ra_samp = samp_ra,
@@ -619,26 +732,17 @@ def create_database(just_source=None, quiet=False, conf=False):
                 else:
                     print(f'{"[ERROR]":<10}', f'I had trouble matching tag {this_tag_name}to the database.')
                     continue
+            if not quiet:
+                print(f'{"[INFO]":<10}', f'Done with line {cubes["line_name"][jj]}.')
 
-            print(f'{"[INFO]":<10}', f'Done with line {cubes["line_name"][jj]}.')
-
-        # Save the database
-        if resolution == 'native':
-            res_suffix = str(target_res_as).split('.')[0]+'.'+str(target_res_as).split('.')[1][0]+'as'
-        elif resolution == 'angular':
-            res_suffix = str(target_res_as).split('.')[0]+'as'
-        elif resolution == 'physical':
-            res_suffix = str(target_res).split('.')[0]+'pc'
-
-
-        fname_dict = out_dic+this_source+"_data_struct_"+res_suffix+'_'+date_str+'.npy'
-        fnames[ii] = fname_dict
+        
         np.save(fname_dict, this_data)
     #---------------------------------------------------------------------
     # NOW PROCESS THE SPECTRA
     #---------------------------------------------------------------------
     if not quiet:
         print(f'{"[INFO]":<10}', 'Start processing spectra.')
+        
     process_spectra(glxy_data,
                     galaxy_list,
                     cubes,fnames,
