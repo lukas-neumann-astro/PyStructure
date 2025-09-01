@@ -615,6 +615,7 @@ def create_database(just_source=None, quiet=False, conf=False):
         #---------------------------------------------------------------------
         # LOOP OVER MAPS, CONVOLVING AND SAMPLING
         #---------------------------------------------------------------------
+        # test
 
         for jj in range(n_cubes):
 
