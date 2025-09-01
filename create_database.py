@@ -612,9 +612,9 @@ def create_database(just_source=None, quiet=False, conf=False):
                 continue
 
 
-            #---------------------------------------------------------------------
-            # LOOP OVER MAPS, CONVOLVING AND SAMPLING
-            #--------------------------------------------------------------------
+        #---------------------------------------------------------------------
+        # LOOP OVER MAPS, CONVOLVING AND SAMPLING
+        #--------------------------------------------------------------------
 
         for jj in range(n_cubes):
 
