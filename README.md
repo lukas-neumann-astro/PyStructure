@@ -3,9 +3,9 @@
 
 <br />
 <div align="center">
-  <a href="https://github.com/lukas-neumann-astro/astro-HexMaps">
-    <img src="images/logo.png" alt="Logo" width="100" height="100">
-  </a>
+#  <a href="https://github.com/PhangsTeam/astro-HexMaps">
+#    <img src="images/logo.png" alt="Logo" width="100" height="100">
+#  </a>
 
   <h3 align="center">HexMaps</h3>
 
@@ -16,9 +16,9 @@
     <br /><br />
     <a href="https://astro-hexmaps.readthedocs.io/en/latest/quickstart.html">View Demo</a>
     ·
-    <a href="https://github.com/lukas-neumann-astro/astro-HexMaps/issues">Report Bug</a>
+    <a href="https://github.com/PhangsTeam/astro-HexMaps/issues">Report Bug</a>
     ·
-    <a href="https://github.com/lukas-neumann-astro/astro-HexMaps/issues">Request Feature</a>
+    <a href="https://github.com/PhangsTeam/astro-HexMaps/issues">Request Feature</a>
   </p>
 </div>
 
@@ -287,7 +287,7 @@ print(db.list_input_headers())       # list all embedded headers
 - [ ] Additional analysis utilities in `hexmaps_analysis.py`
 - [ ] Various feature updates (e.g. chunking for large datasets)
 
-See the [open issues](https://github.com/lukas-neumann-astro/astro-HexMaps/issues)
+See the [open issues](https://github.com/PhangsTeam/astro-HexMaps/issues)
 for a full list of proposed features and known issues.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -324,7 +324,7 @@ Dr. Jakob den Brok — jadenbrok@mpia.de
 
 Dr. Lukas Neumann — lukas.neumann@eso.org
 
-Project Link: [https://github.com/lukas-neumann-astro/astro-HexMaps](https://github.com/lukas-neumann-astro/astro-HexMaps)
+Project Link: [https://github.com/PhangsTeam/astro-HexMaps](https://github.com/PhangsTeam/astro-HexMaps)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -347,14 +347,14 @@ Neumann et al. (2023), Stuber et al. (2025), and others. See the
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/github/contributors/lukas-neumann-astro/astro-HexMaps.svg?style=for-the-badge
-[contributors-url]: https://github.com/lukas-neumann-astro/astro-HexMaps/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/lukas-neumann-astro/astro-HexMaps.svg?style=for-the-badge
-[forks-url]: https://github.com/lukas-neumann-astro/astro-HexMaps/network/members
-[stars-shield]: https://img.shields.io/github/stars/lukas-neumann-astro/astro-HexMaps.svg?style=for-the-badge
-[stars-url]: https://github.com/lukas-neumann-astro/astro-HexMaps/stargazers
-[issues-shield]: https://img.shields.io/github/issues/lukas-neumann-astro/astro-HexMaps.svg?style=for-the-badge
-[issues-url]: https://github.com/lukas-neumann-astro/astro-HexMaps/issues
-[license-shield]: https://img.shields.io/github/license/lukas-neumann-astro/astro-HexMaps.svg?style=for-the-badge
-[license-url]: https://github.com/lukas-neumann-astro/astro-HexMaps/blob/master/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/PhangsTeam/astro-HexMaps.svg?style=for-the-badge
+[contributors-url]: https://github.com/PhangsTeam/astro-HexMaps/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/PhangsTeam/astro-HexMaps.svg?style=for-the-badge
+[forks-url]: https://github.com/PhangsTeam/astro-HexMaps/network/members
+[stars-shield]: https://img.shields.io/github/stars/PhangsTeam/astro-HexMaps.svg?style=for-the-badge
+[stars-url]: https://github.com/PhangsTeam/astro-HexMaps/stargazers
+[issues-shield]: https://img.shields.io/github/issues/PhangsTeam/astro-HexMaps.svg?style=for-the-badge
+[issues-url]: https://github.com/PhangsTeam/astro-HexMaps/issues
+[license-shield]: https://img.shields.io/github/license/PhangsTeam/astro-HexMaps.svg?style=for-the-badge
+[license-url]: https://github.com/PhangsTeam/astro-HexMaps/blob/master/LICENSE
 [product-screenshot]: images/screenshot.png
