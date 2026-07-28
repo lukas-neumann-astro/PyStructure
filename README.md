@@ -282,10 +282,10 @@ print(db.list_input_headers())       # list all embedded headers
 
 ## Roadmap
 
-- [ ] PyPI release
-- [ ] Expanded documentation and tutorials
+- [ ] Extended testing and bug fixes
+- [ ] Tutorials
 - [ ] Additional analysis utilities in `hexmaps_analysis.py`
-- [ ] Various feature updates (e.g. "island-method" masking, chunking for large datasets)
+- [ ] Various feature updates (e.g. chunking for large datasets)
 
 See the [open issues](https://github.com/lukas-neumann-astro/astro-HexMaps/issues)
 for a full list of proposed features and known issues.
