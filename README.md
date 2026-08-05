@@ -134,7 +134,7 @@ hexmaps --download-notebook --workdir ~/my_project
 
 | File | What to configure | How often |
 |------|-------------------|-----------|
-| `config.txt` | data directory, target list, overlay cube, maps/cubes, target resolution, masking, output flags | every run |
+| `config.txt` | data directory (`data_dir`), optional root directory (`root_dir`), target list, overlay cube, maps/cubes, target resolution, masking, output flags | every run |
 | `keys/target_definitions.txt` | sky coordinates, distance, inclination per target | only when adding new targets |
 | `keys/hfs_lines.txt` *(optional)* | Hyperfine structure line definitions | rarely |
 

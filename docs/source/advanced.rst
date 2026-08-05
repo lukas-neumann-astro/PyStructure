@@ -165,10 +165,18 @@ Reference Line and Mask Combinations
       brightest, highest-SNR line first in the cube list.
 
    ``<LINE_NAME>``
-      A specific named line (e.g. ``12co21``), matched case-insensitively
-      against the cube names.  For two or more named lines, give them as a
-      comma-separated sub-list (e.g. ``12co21, 12co10``); their S/N masks
-      are OR-combined into the master mask.
+      A specific named line (e.g. ``12co21``), matched **case-insensitively**
+      against the cube names — ``12co21``, ``12CO21``, and ``12Co21`` all
+      resolve to the same line.  For two or more named lines, give them as a
+      comma-separated sub-list; their S/N masks are OR-combined into the
+      master mask:
+
+      .. code-block:: ini
+
+         ref_line = 12co21                # single named line
+         ref_line = 12CO21                # same — case does not matter
+         ref_line = 12co21, 12co10        # OR of two named-line masks
+         ref_line = 12co21, 12co10, AND   # AND of two named-line masks
 
    ``all``
       OR-combine the S/N masks from every cube in the list into a single

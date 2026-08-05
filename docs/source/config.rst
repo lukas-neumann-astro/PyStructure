@@ -42,38 +42,68 @@ provenance. Neither key affects pipeline behaviour.
 -------
 
 All file and directory locations. Relative paths are resolved relative to
-``config.txt``.
+``config.txt`` by default. Set ``root_dir`` to redirect data and output paths
+to a different base directory.
 
 .. code-block:: ini
 
    [paths]
+   # root_dir = /absolute/or/relative/path   # optional; see below
    data_dir = data/
    out_dir = output/
    folder_savefits = ./saved_fits_files/
    # geom_file = keys/target_definitions.txt
    # hfs_file = keys/hfs_lines.txt
 
+``root_dir`` *(optional)*
+   Override the base directory used to resolve all data and output paths
+   (``data_dir``, ``out_dir``, ``folder_savefits``, and per-map/cube
+   ``directory`` entries).  When set, those paths are resolved relative to
+   ``root_dir`` instead of the directory containing ``config.txt``.
+
+   ``root_dir`` itself is always resolved relative to ``config.txt``'s
+   directory, so a relative value works correctly when the project is moved.
+
+   .. note::
+
+      ``geom_file`` and ``hfs_file`` are **always** resolved relative to
+      ``config.txt``'s directory, regardless of ``root_dir``.  These key
+      files live alongside the config and are not affected by this setting.
+
+   *Default:* not set (use ``config.txt``'s directory as the base).
+
+   Examples:
+
+   .. code-block:: ini
+
+      root_dir = /data/surveys/phangs     # absolute path
+      root_dir = ../../shared_data         # relative to config.txt
+
 ``data_dir``
    Directory that contains the input FITS files. The pipeline prepends the
    target name and appends the file extensions from the map and cube tables
-   to build full file paths.
+   to build full file paths.  Resolved relative to ``root_dir`` when set,
+   otherwise relative to ``config.txt``.
 
    *Default:* ``data/``
 
 ``out_dir``
-   Directory for the output ``.ecsv`` database files.
+   Directory for the output ``.ecsv`` database files.  Resolved relative to
+   ``root_dir`` when set, otherwise relative to ``config.txt``.
 
    *Default:* ``output/``
 
 ``folder_savefits``
    Directory for FITS moment maps, cubes, and mask files written by the
-   optional *fits* stage.
+   optional *fits* stage.  Resolved relative to ``root_dir`` when set,
+   otherwise relative to ``config.txt``.
 
    *Default:* ``./saved_fits_files/``
 
 ``geom_file`` *(optional)*
    Path to the target geometry table. Must be a comma-separated file in the
-   :doc:`target_definitions` format.
+   :doc:`target_definitions` format.  Always resolved relative to
+   ``config.txt``'s directory (unaffected by ``root_dir``).
 
    *Default:* ``keys/target_definitions.txt`` (relative to ``config.txt``).
    Uncomment and set only if your file lives elsewhere.
@@ -81,7 +111,8 @@ All file and directory locations. Relative paths are resolved relative to
 ``hfs_file`` *(optional)*
    Path to the hyperfine structure line definitions file. Only read when
    ``use_hfs_lines = true`` in ``[masking]``. Must be a comma-separated file
-   in the :doc:`hfs_lines` format.
+   in the :doc:`hfs_lines` format.  Always resolved relative to
+   ``config.txt``'s directory (unaffected by ``root_dir``).
 
    *Default:* ``keys/hfs_lines.txt`` (relative to ``config.txt``).
    Uncomment and set only if your file lives elsewhere.
@@ -170,7 +201,8 @@ are processed.
 
 ``directory``
    Override directory for this file. Useful when maps live in a different
-   folder from ``data_dir``.
+   folder from ``data_dir``.  Resolved relative to ``root_dir`` when set,
+   otherwise relative to ``config.txt``.
 
 ``uc_ext`` *(optional)*
    Extension of the corresponding uncertainty map. When provided, the
@@ -288,8 +320,11 @@ are processed.
 
    Quick summary:
 
-   * Line-selection: ``first`` *(default)*, ``all``, ``<n>``,
-     ``<LINE_NAME>``, ``individual``
+   * Line-selection: ``first`` *(default)*, ``all``, ``<n>``
+     (first *n* lines), ``<LINE_NAME>`` or ``<LINE1>, <LINE2>, ...``
+     (one or more named lines, case-insensitive), ``individual``
+   * External-mask: ``input``, ``window``
+   * Combinator: ``OR`` *(default)*, ``AND``
 
    *Default:* ``first``
 
