@@ -539,7 +539,10 @@ def parse_ref_line(ref_line_method, line_names):
                            only to that line's moments.  External masks are
                            still combined with each per-line mask.
         ``<LINE_NAME>``  — one or more named lines from the cube list,
-                           matched case-insensitively.
+                           matched **case-insensitively**.  Provide as a
+                           comma-separated list to build a master mask from
+                           multiple specific lines, e.g.
+                           ``ref_line = 12co21, 12co10``.
 
     Parameters
     ----------
@@ -601,26 +604,27 @@ def parse_ref_line(ref_line_method, line_names):
     line_tokens = []  # resolved line-names or keyword strings
 
     for raw in raw_tokens:
+        upper = raw.upper()
 
-        if raw in ("AND", "OR"):
-            combinator = raw
+        if upper in ("AND", "OR"):
+            combinator = upper
             continue
 
-        if raw == "input":
+        if upper == "INPUT":
             use_input = True
             continue
 
-        if raw == "window":
+        if upper == "WINDOW":
             use_window = True
             continue
 
-        if raw == "individual":
+        if upper == "INDIVIDUAL":
             use_individual = True
             line_tokens.append("individual")
             continue
 
-        if raw in ("first", "all"):
-            line_tokens.append(raw)
+        if upper in ("FIRST", "ALL"):
+            line_tokens.append(upper.lower())   # store canonical lowercase
             continue
 
         # Positive integer?
@@ -636,9 +640,9 @@ def parse_ref_line(ref_line_method, line_names):
             line_tokens.append(raw)  # store as string for uniform handling
             continue
 
-        # Named line from the cube list?
-        if raw in upper_to_orig:
-            line_tokens.append(upper_to_orig[raw])  # preserve original case
+        # Named line from the cube list? (case-insensitive)
+        if upper in upper_to_orig:
+            line_tokens.append(upper_to_orig[upper])  # preserve original case
             continue
 
         # Nothing matched
