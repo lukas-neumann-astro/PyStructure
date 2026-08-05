@@ -27,6 +27,14 @@ comments = Example HexMaps run
 # [paths] — data/output locations and metadata
 # -----------------------------------------------------------------------------
 [paths]
+# Optional: root directory for the project.
+# When set, all other relative paths (data_dir, out_dir, folder_savefits,
+# geom_file, hfs_file, and per-map/cube directories) are resolved relative
+# to root_dir instead of this config file's directory.
+# root_dir itself is resolved relative to this config file's location.
+# Leave blank or omit entirely to use this config file's directory as the base.
+# root_dir =
+
 # Directory containing the input FITS files
 data_dir = data/
 

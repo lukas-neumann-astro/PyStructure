@@ -291,24 +291,53 @@ class KeyHandler:
         # Resolve all paths relative to the directory containing config.txt.
         # Using .resolve() converts conf_path to an absolute path first, so
         # this is safe even when conf_path itself is given as a relative path.
-        base = self.conf_path.resolve().parent
+        conf_base = self.conf_path.resolve().parent
+
+        # Read root_dir directly from the raw file rather than via configparser
+        # to avoid DuplicateSectionError when [paths] appears in an unusual
+        # position in the user's config.  We scan for the first non-comment,
+        # non-blank 'root_dir = ...' line inside the [paths] section.
+        raw_root = ""
+        in_paths = False
+        with open(self.conf_path, "r") as _fh:
+            for _line in _fh:
+                _stripped = _line.strip()
+                if not _stripped or _stripped.startswith("#"):
+                    continue
+                if _stripped.lower() == "[paths]":
+                    in_paths = True
+                    continue
+                if _stripped.startswith("[") and in_paths:
+                    break   # left the [paths] section
+                if in_paths and _stripped.lower().startswith("root_dir"):
+                    # key = value  (inline comments already stripped by the
+                    # inline_comment_prefixes=('#',) convention used elsewhere)
+                    _, _, val = _stripped.partition("=")
+                    val = val.split("#")[0].strip()
+                    raw_root = val
+                    break
+
+        if raw_root:
+            # root_dir is resolved relative to the config file's directory
+            base = (conf_base / raw_root).resolve()
+            LOG.info(f"root_dir set: all relative paths resolved under {base}")
+        else:
+            base = conf_base
 
         self.meta["data_dir"] = str(base / _get_path("data_dir", "data/"))
         self.meta["out_dir"] = str(base / _get_path("out_dir", "output/"))
         self.meta["folder_savefits"] = str(
             base / _get_path("folder_savefits", "./saved_fits_files/")
         )
-        # geom_file and hfs_file intentionally fall back to a default path
-        # next to config.txt without a warning: this is documented behavior
-        # (geom_file is required regardless and will raise its own error if
-        # missing; hfs_file is optional and its "fallback" already depends
-        # on whether the default file happens to exist, not just on whether
-        # the key was set).
+        # geom_file and hfs_file are always resolved relative to the config
+        # file's own directory (conf_base), not to root_dir.  These are
+        # project-level key files that live next to config.txt and should
+        # not move when root_dir points data and output elsewhere.
         self.meta["geom_file"] = str(
-            base / paths.get("geom_file", "keys/target_definitions.txt")
+            conf_base / paths.get("geom_file", "keys/target_definitions.txt")
         )
         self.meta["hfs_file"] = (
-            str(base / paths.get("hfs_file", "")) if paths.get("hfs_file") else None
+            str(conf_base / paths.get("hfs_file", "")) if paths.get("hfs_file") else None
         )
 
         self.meta["user"] = _get_meta("user", "Unknown user")
