@@ -1249,9 +1249,9 @@ def run_fits(
         return val if val else folder
 
     folder_moms = _cat_folder("folder_moms")
-    folder_maps     = _cat_folder("folder_maps")
-    folder_masks    = _cat_folder("folder_masks")
-    folder_cubes    = _cat_folder("folder_cubes")
+    folder_maps = _cat_folder("folder_maps")
+    folder_masks = _cat_folder("folder_masks")
+    folder_cubes = _cat_folder("folder_cubes")
 
     if not (save_mom_maps or save_maps or save_mask or save_cubes):
         LOG.info(f"Output writing disabled for {target}; skipping.")

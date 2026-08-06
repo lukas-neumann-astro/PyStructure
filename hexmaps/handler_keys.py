@@ -308,7 +308,7 @@ class KeyHandler:
                     in_paths = True
                     continue
                 if _stripped.startswith("[") and in_paths:
-                    break   # left the [paths] section
+                    break  # left the [paths] section
                 if in_paths and _stripped.lower().startswith("root_dir"):
                     # key = value  (inline comments already stripped by the
                     # inline_comment_prefixes=('#',) convention used elsewhere)
@@ -343,7 +343,9 @@ class KeyHandler:
             conf_base / paths.get("geom_file", "keys/target_definitions.txt")
         )
         self.meta["hfs_file"] = (
-            str(conf_base / paths.get("hfs_file", "")) if paths.get("hfs_file") else None
+            str(conf_base / paths.get("hfs_file", ""))
+            if paths.get("hfs_file")
+            else None
         )
 
         self.meta["user"] = _get_meta("user", "Unknown user")
